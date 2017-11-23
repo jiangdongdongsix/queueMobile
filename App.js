@@ -4,6 +4,7 @@
  * @flow
  */
 import React, { Component } from "react";
+import { View } from 'react-native'
 import { Provider, connect } from "react-redux";
 import Routes from './src/config/routes';
 
@@ -14,7 +15,10 @@ export default class App extends Component {
 
     render() {
         return(
-            <Routes />
+            <View style = {{flex:1}}>
+                <Routes />
+            </View>
+
         )
     }
 }
