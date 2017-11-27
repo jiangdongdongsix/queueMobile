@@ -15,7 +15,8 @@ export default class MyHomeScreen extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: []
+            data: [],
+            dataFlag:true,
         }
     }
 
@@ -59,7 +60,6 @@ export default class MyHomeScreen extends React.Component {
     }
 
     componentWillMount() {
-        console.log("wojinlaile ");
         const that = this;
         fetch("http://172.21.84.161:3334/iqescloud/app/homePage")
             .then((response) => response.json())
@@ -72,8 +72,9 @@ export default class MyHomeScreen extends React.Component {
                 }
 
             }).catch((error) => {
-            console.error(error);
-            console.error("出错了");
+                that.setState({
+                    dataFlag:false
+                })
         });
     }
 
@@ -95,7 +96,6 @@ export default class MyHomeScreen extends React.Component {
 
 
     renderItem(item) {
-        console.log(item)
         return (
             <View style={styles.shopContent}>
                 <View style={styles.shop}>
@@ -140,10 +140,15 @@ export default class MyHomeScreen extends React.Component {
         console.log(this.state.data);
         return (
             <View style={{flex: 1}}>
+                {this.state.dataFlag ?
                 <FlatList
-                    data={this.state.data}
-                    renderItem={({item}) => this.renderItem(item)}
+                data={this.state.data}
+                renderItem={({item}) => this.renderItem(item)}
                 />
+                :
+                <Text>网络出现故障</Text>
+                }
+
             </View>
         )
     }
