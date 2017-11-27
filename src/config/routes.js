@@ -1,6 +1,7 @@
 import { StackNavigator, SafeAreaView } from 'react-navigation';
 import TabList from './tabList';
 import QueueUp from '../page/QueueUp';
+import Order from '../page/MyOrder';
 
 /**
  * 项目路由器
@@ -10,8 +11,8 @@ import QueueUp from '../page/QueueUp';
  */
 const Routes = StackNavigator({
     Home: { screen: TabList },
-    queue:{ screen: QueueUp }
-
+    queue:{ screen: QueueUp },
+    Order:{ screen: Order}
 });
 
 export default Routes;
