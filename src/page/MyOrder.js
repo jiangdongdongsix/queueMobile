@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     },
     OrderListL:{
         flex:4,
-        borderRightColor:'grey',
+        borderRightColor:'#DCDCDC',
         borderStyle:'solid',
         borderRightWidth:1,
         paddingLeft:10
