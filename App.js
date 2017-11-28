@@ -7,6 +7,9 @@ import React, { Component } from "react";
 import { View } from 'react-native'
 import { Provider, connect } from "react-redux";
 import Routes from './src/config/routes';
+import './src/config/constants';
+
+
 
 /**
  * App入口
@@ -18,7 +21,6 @@ export default class App extends Component {
             <View style = {{flex:1}}>
                 <Routes />
             </View>
-
         )
     }
 }
