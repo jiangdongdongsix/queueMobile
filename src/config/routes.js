@@ -12,7 +12,7 @@ import Order from '../page/MyOrder';
 const Routes = StackNavigator({
     Home: { screen: TabList },
     queue:{ screen: QueueUp },
-    Order:{ screen: Order}
+    order:{ screen: Order}
 });
 
 export default Routes;
