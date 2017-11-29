@@ -8,7 +8,7 @@ import { View } from 'react-native'
 import { Provider, connect } from "react-redux";
 import Routes from './src/config/routes';
 import './src/config/constants';
-
+import './src/config/storage';
 
 
 /**
