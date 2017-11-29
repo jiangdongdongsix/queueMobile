@@ -3,7 +3,7 @@ import TabList from './tabList';
 import QueueUp from '../page/QueueUp';
 import Order from '../page/MyOrder';
 import Menu from '../page/Menu';
-import SignUp from '../page/Signup';
+import SignUp from '../page/SignUp';
 import QueueDetail from '../page/QueueDetail';
 /**
  * 项目路由器
