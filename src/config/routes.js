@@ -5,6 +5,7 @@ import Order from '../page/MyOrder';
 import Menu from '../page/Menu';
 import SignUp from '../page/Signup';
 import QueueDetail from '../page/QueueDetail';
+import FeedBack from '../page/FeedBack';
 /**
  * 项目路由器
  * StackNavigator ：堆栈路由器
@@ -17,7 +18,8 @@ const Routes = StackNavigator({
     order:{ screen: Order},
     menu:{screen: Menu},
     signUp:{screen : SignUp},
-    detail:{path:'detail/:queueInfo',screen: QueueDetail}
+    detail:{path:'detail/:queueInfo',screen: QueueDetail},
+    feedback:{screen: FeedBack}
 });
 
 export default Routes;
