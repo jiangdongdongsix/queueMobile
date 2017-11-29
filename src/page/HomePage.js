@@ -55,13 +55,41 @@ export default class MyHomeScreen extends React.Component {
         tabBarLabel: '首页', // 设置标签栏的title。推荐这个方式。
     }
 
-    goQueue = () => {
-        this.props.navigation.navigate('queue');
+    goQueue(item) {
+        console.log(item);
+        let that = this;
+        fetch(url + "/iqescloud/app/queue/virtualQueue",{
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                restaurantId: item.restaurantId,
+                queueInfo:{
+                    customerName:"test02",
+                },
+            })
+        })
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                let info = {
+                    restaurantId:responseJson.localResponse.restaurantId,
+                    queueId:responseJson.localResponse.id,
+                    restaurantInfo:item.restaurantInfo
+                }
+                if (responseJson.ErrorCode === '0') {
+                    that.props.navigation.navigate('queue',{shopInfo:info});
+                }
+            }).catch((error) => {
+            console.log(error);
+        });
     }
 
     componentWillMount() {
         const that = this;
-        fetch("http://172.21.84.161:3334/iqescloud/app/homePage")
+        fetch(url + "/iqescloud/app/homePage")
             .then((response) => response.json())
             .then((responseJson) => {
                 console.log(responseJson);
@@ -96,6 +124,7 @@ export default class MyHomeScreen extends React.Component {
 
 
     renderItem(item) {
+        console.log(item);
         return (
             <View style={styles.shopContent}>
                 <View style={styles.shop}>
@@ -107,7 +136,8 @@ export default class MyHomeScreen extends React.Component {
                             <WingBlank>
                                 <Button type="primary" size="small"
                                         style={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
-                                        onClick={this.goQueue}>排队取号</Button>
+                                        onClick={this.goQueue.bind(this,item)}>排队取号</Button>
+
                             </WingBlank>
                         </View>
                     </View>

@@ -1,118 +1,271 @@
 import React, { Component } from 'react';
-import { View,Text,StyleSheet,Image } from 'react-native';
+import { View,Text,StyleSheet,Image, ScrollView,Modal,TouchableHighlight } from 'react-native';
 import px2dp from '../utils/px2pd';
-import {Dimensions} from 'react-native';
 import { List, InputItem, WhiteSpace,Button,Switch  } from 'antd-mobile';
 import { WingBlank } from 'antd-mobile';
-const shop = require('../images/pic1.png');
-const phone = require('../images/02_call_button.png');
-const loctionIcon = require('../images/02_location_pic.png');
-const timeIcon = require('../images/02_time_pic.png');
-
+import ShopInfo from '../components/ShopInfoComponent';
+const seatImg = require('../images/seat.jpg');
+const loginClose = require('../images/02_close_icon_normal.png');
+import Lightbox from 'react-native-lightbox';
+import {Dimensions} from 'react-native';
 export default class QueueUp extends React.Component {
 
     constructor(props){
         super(props);
         this.state = {
             IsSeat: false,
-            IsReceiveMessage:true
+            IsQueueSuccess:false,
+            modalVisible: false,
+            eatNumber:'',
+            seatNumber:'',
+            customerTel:'',
+            queueInfo:{
+                describe:'',
+                eatMaxNumber:'',
+                eatMinNumber:'',
+                waitPopulation:'',
+                waitTime:''
+            }
+
         };
+    }
+
+    //展示模态窗口
+    showModal = key => (e) => {
+        e.preventDefault(); // 修复 Android 上点击穿透
+        this.setState({
+            [key]: true,
+        });
+    }
+
+
+    //关闭模态窗口
+    onClose = key => () => {
+        this.setState({
+            [key]: false,
+        });
+    }
+
+
+    setModalVisible(visible) {
+        this.setState({modalVisible: visible});
     }
 
     changeSeatFlag = () =>{
         let flag = this.state.IsSeat;
         this.setState({
             IsSeat: !flag,
-
         })
+        let info = {
+            restaurantId:this.props.navigation.state.params.shopInfo.restaurantId,
+            queueInfo: {
+                id: this.props.navigation.state.params.shopInfo.queueId,
+                eatNumber:this.state.eatNumber,
+                seatFlag:false
+            }
+        }
+        if(typeof this.state.eatNumber !== undefined){
+            this.updataQueueData(info);
+        }
     }
 
 
+    changeSeatFlagSelf = () =>{
+        let flag = this.state.IsSeat;
+        this.setState({
+            IsSeat: !flag,
+        })
+
+        if(typeof this.state.seatNumber !== undefined && this.state.seatNumber !== ''){
+            let info = {
+                restaurantId:this.props.navigation.state.params.shopInfo.restaurantId,
+                queueInfo: {
+                    id: this.props.navigation.state.params.shopInfo.queueId,
+                    eatNumber:this.state.eatNumber,
+                    seatFlag:true,
+                    seatNum:this.state.seatNumber
+                }
+            }
+            this.updataQueueData(info);
+        }
+    }
+
+    //改变用餐人数
+    _changeEatNuber= (value) => {
+        console.log(value)
+        this.setState({
+            eatNumber:value
+        });
+        let info = {
+            restaurantId:this.props.navigation.state.params.shopInfo.restaurantId,
+            queueInfo: {
+                id: this.props.navigation.state.params.shopInfo.queueId,
+                eatNumber:value,
+                seatFlag:this.state.IsSeat
+            }
+        }
+        if(value >0 && typeof value !== undefined){
+            this.updataQueueData(info);
+        }
+    }
+
+    //改变座位号
+    _changeSeatNumber= (value) =>{
+        console.log(value)
+        this.setState({
+            seatNumber:value
+        });
+        let info2 = {
+            restaurantId:this.props.navigation.state.params.shopInfo.restaurantId,
+            queueInfo: {
+                id: this.props.navigation.state.params.shopInfo.queueId,
+                eatNumber:this.state.eatNumber,
+                seatFlag:this.state.IsSeat,
+                seatNum:value
+            }
+        }
+        if(value >0 && typeof value !== undefined){
+            this.updataQueueData(info2);
+        }
+    }
+
+    //更新虚拟排队
+    updataQueueData(info){
+        console.log(info);
+        const that = this;
+        fetch(url + '/iqescloud/app/queue/virtualQueue', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(info)
+        }).then(function(response) {
+            return response.json();
+        }).then(function (jsonData) {
+            console.log(jsonData);
+            that.setState({ queueInfo: {
+                describe:jsonData.localResponse.queueInfo.tableType.describe,
+                eatMaxNumber:jsonData.localResponse.queueInfo.tableType.eatMaxNumber,
+                eatMinNumBer:jsonData.localResponse.queueInfo.tableType.eatMinNumber,
+                waitPopulation:jsonData.localResponse.queueInfo.waitPopulation,
+                waitTime:jsonData.localResponse.queueInfo.waitTime
+            } });
+        }).catch(function () {
+            console.log('获取时间出错');
+        });
+    }
+
+
+    _changeTel= (value) => {
+        this.setState({
+            customerTel:value
+        });
+    }
+
+    _queue(){
+        this.setState({
+            IsQueueSuccess:true
+        })
+        const that = this;
+        fetch(url + '/iqescloud/app/queue/confirmQueue?queueId='+this.props.navigation.state.params.shopInfo.queueId +'&tel='+ this.state.customerTel+'&restaurantId='+this.props.navigation.state.params.shopInfo.restaurantId, {
+            method: 'PATCH',
+        }).then(function(response) {
+            return response.json();
+        }).then(function (jsonData) {
+            console.log(jsonData);
+            let info = {
+                queue:jsonData.localResponse.queueInfo,
+                restaurantInfo:this.props.navigation.state.params.shopInfo.restaurantInfo
+            }
+            console.log(info);
+            if (jsonData.ErrorCode === '0') {
+                that.props.navigation.navigate('detail',{queueInfo:info});
+            }
+        }).catch(function () {
+            console.log('获取时间出错');
+        });
+
+    }
+
+    componentWillUnmount(){
+        console.log("33333")
+        console.log(this.state.IsQueueSuccess);
+        if(!this.state.IsQueueSuccess){
+            fetch(url + '/iqescloud/app/queue/queueInfo/id?queueId='+this.props.navigation.state.params.shopInfo.queueId +'&restaurantId='+this.props.navigation.state.params.shopInfo.restaurantId, {
+                method: 'DELETE',
+            }).then(function(response) {
+                return response.json();
+            }).then(function (jsonData) {
+                console.log(jsonData);
+            }).catch(function () {
+                console.log('获取时间出错');
+            });
+        }
+    }
 
     static navigationOptions ={
         title:'排队取号',
     };
+
+
     render(){
        return (
+           <ScrollView>
            <View style={{flex:1}}>
-               <View style={styles.shopInfo}>
-                   <View style={styles.shop}>
-                       <WingBlank>
-                           <Image
-                               source={shop}
-                               style={{height:85,width:85 }}
-                           />
-                       </WingBlank>
-                       <View style={styles.shopLeft}>
-                           <View style={styles.title}>
-                               <Text style = {{fontSize: 20}}>软件园店</Text>
-                               <WingBlank>
-                                   <Image
-                                       source={phone}
-                                       style={{height:30,width:30 }}
-                                   />
-                               </WingBlank>
-                           </View>
-                           <View style={styles.address}>
-                               <Image
-                                   source={loctionIcon}
-                                   style={{height:10,width:10 }}
-                               />
-                               <Text style={styles.addressTittle}>地址：陕西省西安市高新区5楼</Text>
-                           </View>
-                           <View style={styles.address}>
-                               <Image
-                                   source={timeIcon}
-                                   style={{height:10,width:10 }}
-                               />
-                               <Text style={styles.addressTittle}>营业时间: 11:00 - 23:00</Text>
-                           </View>
-                       </View>
-                   </View>
-               </View>
+               <ShopInfo restInfo={ this.props.navigation.state.params.shopInfo.restaurantInfo}/>
                <View  style={styles.eatInput}>
                    <WhiteSpace />
                    <WhiteSpace />
                    <List>
                        <InputItem
                            placeholder="请输入用餐人数"
+                           value = {this.state.eatNumber}
+                           onChange ={this._changeEatNuber}
                        >用餐人数</InputItem>
                    </List>
                </View>
                <View style={styles.IsChooseSeat}>
-                   <WingBlank>
-                     <Text style={{color:'black'}}>座位</Text>
-                   </WingBlank>
-                   <View style={styles.buttonList}>
-                       <Button  size="small" type="primary" style={{backgroundColor: this.state.IsSeat? 'grey' : '#ffa500',borderColor:this.state.IsSeat? 'grey' : '#ffa500'}} onClick={this.changeSeatFlag}>系统自动匹配座位</Button>
                        <WingBlank>
-                           <Button  size="small" type="primary" style={{backgroundColor:this.state.IsSeat? '#ffa500' : 'grey',borderColor:this.state.IsSeat? '#ffa500' : 'grey'}} onClick={this.changeSeatFlag}>自选用餐位置</Button>
+                           <Text style={{color:'black'}}>座位</Text>
                        </WingBlank>
+                       <View style={styles.buttonList}>
+                           <Button  size="small" type="primary" style={{backgroundColor: this.state.IsSeat? 'grey' : '#ffa500',borderColor:this.state.IsSeat? 'grey' : '#ffa500'}} onClick={this.changeSeatFlag}>系统自动匹配座位</Button>
+                           <WingBlank>
+                               <Button  size="small" type="primary" style={{backgroundColor:this.state.IsSeat? '#ffa500' : 'grey',borderColor:this.state.IsSeat? '#ffa500' : 'grey'}} onClick={this.changeSeatFlagSelf}>自选用餐位置</Button>
+                           </WingBlank>
                    </View>
                </View>
-               <View  style={{display:this.state.IsSeat ? 'flex' : 'none'}}>
-                   <List>
+               <View  style={{display:this.state.IsSeat ? 'flex' : 'none',flexDirection:'row',backgroundColor:'white',alignItems:'center'}}>
+                   <List style={{flex:4}}>
                        <InputItem
                            placeholder="请输入桌号"
+                           value = {this.state.seatNumber}
+                           onChange ={this._changeSeatNumber}
                        >桌号</InputItem>
                    </List>
+                   <TouchableHighlight onPress={() => {
+                       this.setModalVisible(!this.state.modalVisible)
+                   }} style={{flex:1,justifyContent:'center'}}>
+                   <Text style={{color:'#ffa500',fontSize:px2dp(10)}}>查看座位图</Text>
+                   </TouchableHighlight>
                </View>
                <WhiteSpace size="lg"/>
                <View style ={styles.queueInfo}>
-                   <View style = {styles.queueContent}>
+                   <View>
                        <Text>餐桌类型</Text>
                        <WhiteSpace />
-                       <Text>小桌（1-4人）</Text>
+                       <Text>{this.state.queueInfo.describe}（{this.state.queueInfo.eatMinNumBer}-{this.state.queueInfo.eatMaxNumber}人）</Text>
                    </View>
                    <View>
                        <Text>等待桌位</Text>
                        <WhiteSpace />
-                       <Text>4桌</Text>
+                       <Text>{this.state.queueInfo.waitPopulation}桌</Text>
                    </View>
                    <View>
                        <Text>预估时间</Text>
                        <WhiteSpace />
-                       <Text>4桌</Text>
+                       <Text>{this.state.queueInfo.waitTime}分钟</Text>
                    </View>
                </View>
                <WhiteSpace size="lg"/>
@@ -120,20 +273,41 @@ export default class QueueUp extends React.Component {
                    <List>
                        <InputItem
                            placeholder="请输入电话号码"
+                           value = {this.state.customerTel}
+                           onChange ={this._changeTel}
                        >电话</InputItem>
                    </List>
                </View>
                <WingBlank><Text style={{fontSize:px2dp(10),color:'#ffa500'}}>*建议您输入手机号码，方便我们短信通知</Text></WingBlank>
-               <WhiteSpace size="lg"/>
-               <View style={styles.IsChooseSeat}>
-                   <WingBlank>
-                       <Text style={{color:'black'}}>是否接收排队状态</Text>
-                   </WingBlank>
-                   <Switch checked={this.state.IsReceiveMessage} color="#ffa500"/>
-               </View>
                <WhiteSpace size="xl"/>
-               <WingBlank><Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}}>立即取号</Button></WingBlank>
+               <WingBlank><Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}} onClick={this._queue.bind(this)}>立即取号</Button></WingBlank>
            </View>
+               <Modal
+                   animationType={"slide"}
+                   transparent={false}
+                   visible={this.state.modalVisible}
+                   onRequestClose={() => {console.log("Modal has been closed.")}}
+               >
+                   <ScrollView>
+                       <View style={{flexDirection:'row',justifyContent: 'space-between',alignItems:'center',borderBottomColor:'grey', borderStyle:'solid', borderBottomWidth:1}}>
+                           <TouchableHighlight onPress={() => {
+                               this.setModalVisible(!this.state.modalVisible)
+                           }}>
+                               <Image source={loginClose} style={{width:50,height:50}}/>
+                           </TouchableHighlight>
+                           <Text style={{fontSize:22,fontWeight:'bold'}}>座位图</Text>
+                           <View/>
+                       </View>
+                       <Lightbox>
+                           <Image
+                               style={{ height: px2dp(640),width: Dimensions.get('window').width,margin: px2dp(10)}}
+                               source={seatImg}
+                           />
+                       </Lightbox>
+
+                   </ScrollView>
+               </Modal>
+           </ScrollView>
        )
     }
 }
@@ -153,19 +327,6 @@ const styles = StyleSheet.create({
         flexDirection:'column',
         justifyContent:'center'
     },
-    title:{
-        flex:3,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center'
-    },
-    address:{
-        flex:1,
-        flexDirection:'row',
-    },
-    addressTittle:{
-        fontSize:10
-    },
     eatInput:{
         backgroundColor:'white',
     },
@@ -175,6 +336,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         backgroundColor:'white',
         alignItems:'center',
+
     },
     buttonList:{
         flexDirection:'row',
@@ -185,10 +347,7 @@ const styles = StyleSheet.create({
         justifyContent:'space-around',
         backgroundColor:'white',
         alignItems:'center'
-
-    },
-
-
+    }
 })
 
 
