@@ -41,7 +41,7 @@ export default class QueueDetail extends React.Component{
                     <View>
                         <Text>餐桌类型</Text>
                         <WhiteSpace />
-                        <Text>{this.props.navigation.state.params.queueInfo.queue.tableType.describe}（{this.props.navigation.state.params.queueInfo.queue.tableType.eatMinNumber}-{this.props.navigation.state.params.queueInfo.queue.tableType.eatMaxNumber}人）</Text>
+                        <Text>{this.props.navigation.state.params.queueInfo.queue.tableType.describe || ""}（{this.props.navigation.state.params.queueInfo.queue.tableType.eatMinNumber}-{this.props.navigation.state.params.queueInfo.queue.tableType.eatMaxNumber}人）</Text>
                     </View>
                     </WingBlank>
                     <View>

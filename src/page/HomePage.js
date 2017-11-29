@@ -3,8 +3,8 @@ import {Image, View, StyleSheet, Text, FlatList} from 'react-native';
 import {Button, WingBlank, WhiteSpace} from 'antd-mobile';
 import HeaderSearchBar from '../components/HeaderSearchBar';
 import px2dp from '../utils/px2pd';
+import px2dw from '../utils/px2dw';
 import {Dimensions} from 'react-native';
-
 // 底部 正常时的照片
 const HomeIcon = require('../images/home_icon_normal.png');
 //选中时照片
@@ -48,7 +48,7 @@ export default class MyHomeScreen extends React.Component {
             return (
                 <Image
                     source={!focused ? HomeIcon : HomeIconChecked}
-                    style={[{height: 25, width: 25}, {tintColor: tintColor}]}
+                        style={[{height: 25, width: 25}, {tintColor: tintColor}]}
                 />
             )
         }), // 设置标签栏的图标。需要单独设置。
@@ -96,6 +96,10 @@ export default class MyHomeScreen extends React.Component {
                     that.setState({
                         data: responseJson.restaurantList
                     })
+                }else {
+                    that.setState({
+                        dataFlag:false
+                    })
                 }
 
             }).catch((error) => {
@@ -108,12 +112,10 @@ export default class MyHomeScreen extends React.Component {
 
     renderqueinfo(item){
         return (
-            <View style={styles.queueItem}>
-                <Text>小桌{item.tableType.eatMinNumber}-{item.tableType.eatMaxNumber}</Text>
-                <WingBlank/>
-                <Text>正在排队{item.waitPopulation}桌</Text>
-                <WingBlank/>
-                <Text>约{item.waitTime}分钟</Text>
+            <View style={styles.queueItem} key={item.tableType.id}>
+                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>{item.tableType.describe}({item.tableType.eatMinNumber}-{item.tableType.eatMaxNumber})人</Text>
+                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>正在排队{item.waitPopulation}桌</Text>
+                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>约{item.waitTime}分钟</Text>
             </View>
 
         )
@@ -122,7 +124,7 @@ export default class MyHomeScreen extends React.Component {
 
     renderItem(item) {
         return (
-            <View style={styles.shopContent}>
+            <View style={styles.shopContent} key={item.restaurantId}>
                 <View style={styles.shop}>
                     <View style={styles.shopName}>
                         <WingBlank><Text>{item.restaurantInfo.name}</Text></WingBlank>
@@ -141,7 +143,7 @@ export default class MyHomeScreen extends React.Component {
                         </View>
                     </View>
                     <View style={styles.shopQueue}>
-                        <WingBlank>
+                        <WingBlank style={{width:px2dw(70)}}>
                             <Image
                                 source={shop}
                                 style={{height: 85, width: 85}}
@@ -153,6 +155,7 @@ export default class MyHomeScreen extends React.Component {
                                 renderItem={
                                     ({item}) => this.renderqueinfo(item)
                                     }
+                                style={{width: px2dw(250) }}
                             />
 
                     </View>
@@ -174,7 +177,9 @@ export default class MyHomeScreen extends React.Component {
                 renderItem={({item}) => this.renderItem(item)}
                 />
                 :
-                <Text>网络出现故障</Text>
+                <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                    <Text>网络出现故障</Text>
+                </View>
                 }
 
             </View>
@@ -197,8 +202,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     queueItem: {
+        width: px2dw(230),
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
     },
     shopName: {
         flex: 2,
@@ -209,6 +215,7 @@ const styles = StyleSheet.create({
     shopQueue: {
         flex: 4,
         flexDirection: 'row',
+        width:Dimensions.get('window').width
     },
     address: {
         flex: 1,
