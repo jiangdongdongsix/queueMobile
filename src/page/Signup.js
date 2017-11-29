@@ -85,7 +85,7 @@ export default class SignUp extends React.Component {
                                 <TextInput placeholder='请输入手机号'
                                            placeholderTextColor={'#939393'}
                                            underlineColorAndroid="transparent"
-                                           style={{flex:3}}
+                                           style={{flex:2}}
                                            onChangeText={(text)=>this.handleInputTel(text)}
                                 >
                                     {this.state.tel}
@@ -96,7 +96,7 @@ export default class SignUp extends React.Component {
                                 <TextInput placeholder='请输入密码'
                                            placeholderTextColor={'#939393'}
                                            underlineColorAndroid="transparent"
-                                           style={{flex:3}}
+                                           style={{flex:2}}
                                            secureTextEntry={true}
                                            onChangeText={(text)=>this.handleInputPwd(text)}
                                 >
@@ -107,7 +107,7 @@ export default class SignUp extends React.Component {
                                 <TextInput placeholder='请再次输入密码'
                                            placeholderTextColor={'#939393'}
                                            underlineColorAndroid="transparent"
-                                           style={{flex:3}}
+                                           style={{flex:2}}
                                            secureTextEntry={true}
                                            onChangeText={(text)=>this.handleInputRPwd(text)}
                                 >
