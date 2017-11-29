@@ -1,37 +1,104 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,View,Text,ImageBackground,Modal,Animated,TouchableOpacity,TextInput } from 'react-native';
-import { Button,Progress,List,Tabs } from 'antd-mobile';
+import { StyleSheet,View,Text,TextInput } from 'react-native';
+import { Button,Modal } from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 /**
  *  注册
  */
-
-
 export default class SignUp extends React.Component {
     static navigationOptions = {
         title:'注册', // 只会设置导航栏文字
     };
 
+    constructor(props){
+        super(props);
+        this.state = {
+            tel: '',
+            pwd:'',
+            rpwd:''
+        };
+    }
+
+    handleInputTel(tel){
+        let that = this;
+        console.log('tel:' + tel);
+        that.setState({tel:tel});
+    }
+
+    handleInputPwd(pwd){
+        let that = this;
+        console.log('pwd:' + pwd);
+        that.setState({ pwd: pwd });
+        console.log(that.state);
+    }
+
+    handleInputRPwd(rpwd){
+        let that = this;
+        console.log('rpwd:' + rpwd);
+        that.setState({ rpwd: rpwd });
+        console.log(that.state);
+    }
+
+
+    successRegister= () =>{
+        this.props.navigation.navigate('Home');
+    };
+
+    handleRegister(){
+        let that = this;
+        console.log(that.state);
+        let Info = {
+            tel:that.state.tel,
+            password:that.state.pwd
+        };
+        fetch(url + '/iqescloud/app/user/register', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(Info)
+        }).then(function(response) {
+            return response.json();
+        }).then(function (jsonData) {
+            console.log(jsonData);
+            if(jsonData.ErrorCode === '0'){
+                console.log("注册成功");
+            }
+            that.successRegister();
+        }).catch(function () {
+            console.log('网络连接错误');
+        });
+    }
     render() {
         return (
             <View style={styles.LoginModal}>
                 <View style={styles.LoginTabs}>
                         <View>
                             <View style={styles.LoginTabsUserNumber}>
-                                <Text style={styles.LoginTabsUserNumberText}>设置账号</Text>
-                                <TextInput placeholder='请输入账号'
+                                <Text style={styles.LoginTabsUserNumberText}>中国</Text>
+                                <TextInput style={{flex:3}} underlineColorAndroid="transparent">+86</TextInput>
+                                <Text style={{fontSize:px2dp(16),paddingTop:px2dp(10),paddingRight:px2dp(8)}}> > </Text>
+                            </View>
+                            <View style={styles.LoginTabsUserNumber}>
+                                <Text style={styles.LoginTabsUserNumberText}>手机号码</Text>
+                                <TextInput placeholder='请输入手机号'
                                            placeholderTextColor={'#939393'}
+                                           underlineColorAndroid="transparent"
                                            style={{flex:3}}
-                                           border={'none'}
+                                           onChangeText={(text)=>this.handleInputTel(text)}
                                 >
+                                    {this.state.tel}
                                 </TextInput>
                             </View>
                             <View style={styles.LoginTabsUserNumber}>
                                 <Text style={styles.LoginTabsUserPwd}>设置密码</Text>
                                 <TextInput placeholder='请输入密码'
                                            placeholderTextColor={'#939393'}
+                                           underlineColorAndroid="transparent"
                                            style={{flex:3}}
-                                           border={'none'}
+                                           secureTextEntry={true}
+                                           onChangeText={(text)=>this.handleInputPwd(text)}
                                 >
                                 </TextInput>
                             </View>
@@ -39,13 +106,15 @@ export default class SignUp extends React.Component {
                                 <Text style={styles.LoginTabsUserPwd}>确认输入密码</Text>
                                 <TextInput placeholder='请再次输入密码'
                                            placeholderTextColor={'#939393'}
+                                           underlineColorAndroid="transparent"
                                            style={{flex:3}}
-                                           border={'none'}
+                                           secureTextEntry={true}
+                                           onChangeText={(text)=>this.handleInputRPwd(text)}
                                 >
                                 </TextInput>
                             </View>
                             <View style={{marginTop: px2dp(80), height: px2dp(50)}}>
-                                <Button  type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>立即注册</Button>
+                                <Button  type="primary" onClick={this.handleRegister.bind(this)} style={{backgroundColor:'#F27241',borderWidth:0}}>立即注册</Button>
                             </View>
                         </View>
                 </View>

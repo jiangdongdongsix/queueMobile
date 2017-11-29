@@ -26,7 +26,9 @@ export default class MyInfo extends React.Component {
             rvalue:'优',
             percent: 90,
             fadeAnim: new Animated.Value(15),
-            modal:false
+            modal:false,
+            user:'',
+            pwd:''
         };
     }
     static navigationOptions = {
@@ -82,6 +84,36 @@ export default class MyInfo extends React.Component {
         });
         this.props.navigation.navigate('signUp');
     };
+
+    handleInputUser(user){
+        let that = this;
+        that.setState({user:user});
+    }
+
+    handleInputPwd(pwd){
+        let that = this;
+        that.setState({ pwd: pwd });
+    }
+
+    successSignIn= () =>{
+        this.props.navigation.navigate('Home');
+    };
+
+    handleSignIn(){
+        let that = this;
+        fetch(url + '/iqescloud/app/user/login?tel=' + that.state.user +'&password=' + that.state.pwd)
+            .then(function(response) {
+                return response.json();
+            }).then(function (jsonData) {
+            console.log(jsonData);
+            if(jsonData.ErrorCode === '0'){
+                console.log('登录成功');
+            }
+           that.setState({modal:false});
+        }).catch(function () {
+            console.log('登录失败');
+        });
+    }
 
     render() {
         const { percent,name,rvalue } = this.state;
@@ -142,8 +174,9 @@ export default class MyInfo extends React.Component {
                                                             <Text style={styles.LoginTabsUserNumberText}>账号</Text>
                                                             <TextInput placeholder='请输入账号'
                                                                        placeholderTextColor={'#939393'}
+                                                                       underlineColorAndroid="transparent"
                                                                        style={{flex:5}}
-                                                                       border={'none'}
+                                                                       onChangeText={(text)=>this.handleInputUser(text)}
                                                             >
                                                             </TextInput>
                                                         </View>
@@ -151,28 +184,31 @@ export default class MyInfo extends React.Component {
                                                             <Text style={styles.LoginTabsUserPwd}>密码</Text>
                                                             <TextInput placeholder='请输入密码'
                                                                        placeholderTextColor={'#939393'}
+                                                                       underlineColorAndroid="transparent"
                                                                        style={{flex:5}}
-                                                                       border={'none'}
+                                                                       secureTextEntry={true}
+                                                                       onChangeText={(text)=>this.handleInputPwd(text)}
                                                             >
                                                             </TextInput>
                                                         </View>
                                                         <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                                            <Button onPress={this._handleBack.bind(this)}  type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
+                                                            <Button onClick={this.handleSignIn.bind(this)} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
                                                         </View>
                                                     </View>
 
                                                     <View>
                                                         <View style={styles.LoginTabsUserNumber}>
-                                                            <Text style={styles.LoginTabsUserNumberText}>手机号</Text>
-                                                            <TextInput style={{flex:5}} border={'none'}>+86</TextInput>
+                                                            <Text style={styles.LoginTabsUserNumberText}>中国</Text>
+                                                            <TextInput style={{flex:5}} border={'none'} editable={false}>+86</TextInput>
                                                             <Text style={{fontSize:px2dp(16),paddingTop:px2dp(10),paddingRight:px2dp(8)}}> > </Text>
                                                         </View>
                                                         <View style={{flexDirection:'row',backgroundColor:'white',marginTop:10}}>
                                                             <Text style={styles.LoginTabsUserPwd}>手机号</Text>
                                                             <TextInput placeholder='请输入手机号'
                                                                        placeholderTextColor={'#939393'}
+                                                                       underlineColorAndroid="transparent"
                                                                        style={{flex:5}}
-                                                                       border={'none'}
+                                                                       autoFocus={true}
                                                             >
                                                             </TextInput>
                                                         </View>
@@ -180,8 +216,8 @@ export default class MyInfo extends React.Component {
                                                             <Text style={styles.LoginTabsUserPwd}>验证码</Text>
                                                             <TextInput placeholder='请输入验证码'
                                                                        placeholderTextColor={'#939393'}
+                                                                       underlineColorAndroid="transparent"
                                                                        style={{flex:3}}
-                                                                       border={'none'}
                                                             >
                                                             </TextInput>
                                                             <Button  size="small" style={styles.LoginTabsPhoneVerify}>请输入验证码</Button>

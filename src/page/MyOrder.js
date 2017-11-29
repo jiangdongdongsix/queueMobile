@@ -32,7 +32,7 @@ export default class MyOrder extends React.Component {
                                 </View>
                             </View>
                             <View style={styles.OrderListR}>
-                                <Text style={{fontSize:22,color:'orange',paddingTop:6,paddingBottom:8}}>B201</Text>
+                                <Text style={styles.OrderListRNumber}>B201</Text>
                                 <Text style={{color:'orange',paddingBottom:8}}>小桌</Text>
                                 <Text>(1-4)人</Text>
                             </View>
@@ -71,8 +71,8 @@ const styles = StyleSheet.create({
     },
     OrderList:{
         backgroundColor:'white',
-        padding:8,
-        marginTop:10,
+        padding:px2dp(10),
+        marginTop:px2dp(10),
         height:px2dp(100),
         flexDirection:'row'
     },
@@ -81,20 +81,24 @@ const styles = StyleSheet.create({
         borderRightColor:'#DCDCDC',
         borderStyle:'solid',
         borderRightWidth:1,
-        paddingLeft:10
+        paddingLeft:px2dp(6)
     },
     OrderTime:{
         fontWeight:'bold',
-        fontSize:18,
-        paddingTop:8,
-        paddingBottom:8
+        fontSize:px2dp(18),
+        paddingBottom:px2dp(8)
     },
     OrderResult:{
         flexDirection:'row',
-        paddingTop:8
+        paddingTop:px2dp(8)
     },
     OrderListR:{
         flex:2,
-        paddingLeft:15
+        paddingLeft:px2dp(20)
+    },
+    OrderListRNumber:{
+        fontSize:px2dp(20),
+        color:'orange',
+        paddingBottom:8
     }
 });
