@@ -8,16 +8,14 @@ import {Dimensions} from 'react-native';
 
 // device width/height
 // 获取设备宽度
-// const deviceWidthDp = Dimensions.get('window').width;
+const deviceWidthDp = Dimensions.get('window').width;
 //获取设备高度
-const deviceHeightDp = Dimensions.get('window').height;
+// const deviceHeightDp = Dimensions.get('window').height;
 // design width/height
-const uiHeightPx = 640;
+const uiWidthPx = 320;
 
-export default function px2dp(uiElementPx) {
+export default function px2dw(uiElementWx) {
     //console.log(deviceWidthDp);
     //console.log(deviceHeightDp);
-    return uiElementPx *  deviceHeightDp / uiHeightPx;
+    return uiElementWx *  deviceWidthDp / uiWidthPx;
 }
-
-
