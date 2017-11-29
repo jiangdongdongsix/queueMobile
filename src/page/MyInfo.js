@@ -12,7 +12,6 @@ const myTopBg = require('../images/06_top_bg.png');
 const myIcon = require('../images/user_icon_normal.png');
 const myIconChecked = require('../images/01_user_icon_check.png');
 const loginClose = require('../images/02_close_icon_normal.png');
-const sss = require('../images/06_order_icon.png');
 const Item = List.Item;
 const tabs = [
     {title:'账号密码登录'},
@@ -22,13 +21,15 @@ export default class MyInfo extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            name:'小明',
-            rvalue:'优',
-            percent: 90,
+            name:'点击登录 >',
+            rvalue:'--',
+            percent: 50,
+            score:'--',
             fadeAnim: new Animated.Value(15),
             modal:false,
             user:'',
-            pwd:''
+            pwd:'',
+            login:''
         };
     }
     static navigationOptions = {
@@ -95,9 +96,65 @@ export default class MyInfo extends React.Component {
         that.setState({ pwd: pwd });
     }
 
-    successSignIn= () =>{
-        this.props.navigation.navigate('Home');
-    };
+    handleStorage(){
+        // 使用key来保存数据。这些数据一般是全局独有的，常常需要调用的。
+        // 除非你手动移除，这些数据会被永久保存，而且默认不会过期。
+        storage.save({
+            key: this.state.,  // 注意:请不要在key中使用_下划线符号!
+            data: {
+                from: 'some other site',
+                userid: 'some userid',
+                token: 'some token'
+            },
+
+            // 如果不指定过期时间，则会使用defaultExpires参数
+            // 如果设为null，则永不过期
+            expires: 1000 * 3600
+        });
+
+        // 读取
+        storage.load({
+            key: 'loginState',
+
+            // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+            autoSync: true,
+
+            // syncInBackground(默认为true)意味着如果数据过期，
+            // 在调用sync方法的同时先返回已经过期的数据。
+            // 设置为false的话，则等待sync方法提供的最新数据(当然会需要更多时间)。
+            syncInBackground: true,
+
+            // 你还可以给sync方法传递额外的参数
+            syncParams: {
+                extraFetchOptions: {
+                    // 各种参数
+                },
+                someFlag: true,
+            },
+        }).then(ret => {
+            // 如果找到数据，则在then方法中返回
+            // 注意：这是异步返回的结果（不了解异步请自行搜索学习）
+            // 你只能在then这个方法内继续处理ret数据
+            // 而不能在then以外处理
+            // 也没有办法“变成”同步返回
+            // 你也可以使用“看似”同步的async/await语法
+
+            console.log(ret.userid);
+            this.setState({ user: ret });
+        }).catch(err => {
+            //如果没有找到数据且没有sync方法，
+            //或者有其他异常，则在catch中返回
+            console.warn(err.message);
+            switch (err.name) {
+                case 'NotFoundError':
+                    // TODO;
+                    break;
+                case 'ExpiredError':
+                    // TODO
+                    break;
+            }
+        })
+    }
 
     handleSignIn(){
         let that = this;
@@ -109,7 +166,8 @@ export default class MyInfo extends React.Component {
             if(jsonData.ErrorCode === '0'){
                 console.log('登录成功');
             }
-           that.setState({modal:false});
+            that.setState({modal:false});
+
         }).catch(function () {
             console.log('登录失败');
         });
@@ -120,22 +178,22 @@ export default class MyInfo extends React.Component {
         return (
             <View style={styles.Info}>
                 <View style={styles.InfoPerson}>
-                    <ImageBackground source={myTopBg} style={{height:195}}>
+                    <ImageBackground source={myTopBg} style={{height:px2dp(200)}}>
                         <View style={styles.InfoTitleIcon}>
                             <View>
-                                <Image source={mySetNormal} style={{height:45,width:45 }}/>
+                                <Image source={mySetNormal} style={{height:px2dp(40),width:px2dp(40) }}/>
                             </View>
                             <View>
-                                <Image source={myMessageNormal} style={{height:45,width:45 }}/>
+                                <Image source={myMessageNormal} style={{height:px2dp(40),width:px2dp(40) }}/>
                             </View>
                         </View>
                         <View style={styles.InfoName}>
                             <View style={{flex:2}}>
-                                <Image source={myHead} style={{height:85,width:85 }}/>
+                                <Image source={myHead} style={{height:px2dp(85),width:px2dp(85) }}/>
                             </View>
                             <View style={styles.InfoNameGroup}>
-                                <Text style={styles.InfoTitleUserName}>{name}</Text>
-                                <Text style={{paddingBottom:6}}>信誉值:{rvalue}</Text>
+                                <Text style={styles.InfoTitleUserName} onPress={this.showModal('modal')}>{name}</Text>
+                                <Text style={{paddingBottom:px2dp(10)}}>信誉值:{rvalue}</Text>
                                 <View style={styles.InfoUserValueProgress}>
                                     <Progress percent={percent} position="normal"/>
                                 </View>
@@ -146,13 +204,13 @@ export default class MyInfo extends React.Component {
                 <View style={styles.InfoList}>
                     <View style={{flex:4}}>
                         <List style={styles.InfoListItems}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.initOrder}>我的订单</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === ''? ()=>{}: this.initOrder}>我的订单</Item>
                         </List>
                         <List style={styles.InfoListItems}>
-                            <Item extra='500' thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.initMenu}>会员积分</Item>
+                            <Item extra={this.state.score} thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.state.login === ''? ()=>{}:this.initMenu}>会员积分</Item>
                         </List>
                         <List style={styles.InfoListItems}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.showModal('modal')}>意见反馈</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.state.login === ''? ()=>{}:this.showModal('modal')}>意见反馈</Item>
                         </List>
                             <Modal
                                 animationType={'slide'}
@@ -162,7 +220,7 @@ export default class MyInfo extends React.Component {
                                         <View style={styles.LoginModal}>
                                             <View style={styles.LoginModalTitle}>
                                                 <Text onPress={this.onClose('modal')}>
-                                                    <Image source={loginClose} style={{width:120,height:120}}/>
+                                                    <Image source={loginClose} style={{width:px2dp(120),height:px2dp(120)}}/>
                                                 </Text>
                                                 <Text style={styles.LoginModalLoginText}>登录</Text>
                                                 <Text style={{paddingRight:8}} onPress={this.handleSignUp}>注册</Text>
@@ -233,7 +291,7 @@ export default class MyInfo extends React.Component {
                             </Modal>
                     </View>
                     <View style={{flex:2}}>
-                        <Button onPress={() => this.props.navigation.goBack()}> 退出登录</Button>
+                        <Button onPress={() => this.props.navigation.goBack()} style={{display: this.state.login === '' ? 'none':'flex'}}> 退出登录</Button>
                     </View>
                 </View>
             </View>
@@ -252,19 +310,19 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection:'row',
         justifyContent:'space-between',
-        padding:5
+        padding:px2dp(6)
     },
     InfoName:{
         flex:2,
         flexDirection:'row',
-        padding:5
+        padding:px2dp(6)
     },
     InfoNameGroup:{
         flex:4
     },
     InfoTitleUserName:{
-        fontSize:22,
-        paddingBottom:4,
+        fontSize:px2dp(20),
+        paddingBottom:px2dp(4),
         fontWeight:'bold'
     },
     InfoUserValueProgress:{
@@ -276,7 +334,7 @@ const styles = StyleSheet.create({
         flex:4
     },
     InfoListItems:{
-        marginBottom:20
+        marginBottom:px2dp(20)
     },
     LoginModal:{
         flex:1,
@@ -293,10 +351,10 @@ const styles = StyleSheet.create({
         borderBottomWidth:1
     },
     LoginModalLoginText:{
-        fontSize:22,
+        fontSize:px2dp(20),
         fontWeight:'bold',
-        paddingBottom:7,
-        paddingTop:5
+        paddingBottom:px2dp(7),
+        paddingTop:px2dp(5)
     },
     LoginTabs:{
         flex:5,
@@ -305,18 +363,18 @@ const styles = StyleSheet.create({
     LoginTabsUserNumber:{
         flexDirection:'row',
         backgroundColor:'white',
-        marginTop:10
+        marginTop:px2dp(10)
     },
     LoginTabsUserNumberText:{
         flex:1,
-        paddingTop:15,
-        paddingLeft:20,
+        paddingTop:px2dp(15),
+        paddingLeft:px2dp(20),
         fontWeight:'bold'
     },
     LoginTabsUserPwd:{
         flex:1,
-        paddingTop:15,
-        paddingLeft:20,
+        paddingTop:px2dp(15),
+        paddingLeft:px2dp(20),
         fontWeight:'bold'
     },
     LoginTabsPhoneVerify:{
