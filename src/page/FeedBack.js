@@ -107,7 +107,7 @@ export default class FeedBack extends React.Component {
                         />
                     </List>
                 </View>
-                <View style={{flex:1}}>
+                <View style={{flex:1,paddingLeft:px2dp(20)}}>
                     <ImagePicker
                         onImageClick={(index, fs) => console.log(index, fs)}
                     />
