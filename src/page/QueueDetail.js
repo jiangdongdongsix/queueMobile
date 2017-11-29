@@ -10,6 +10,19 @@ export default class QueueDetail extends React.Component{
         title:'单号详情',
     };
 
+    _cancel(){
+        const that = this;
+        fetch(url + '/iqescloud/app/queue/queueInfo/id?queueId='+this.props.navigation.state.params.queueInfo.queue.queueId +'&restaurantId='+this.props.navigation.state.params.queueInfo.restaurantId, {
+            method: 'DELETE',
+        }).then(function(response) {
+            return response.json();
+        }).then(function (jsonData) {
+            that.props.navigation.navigate('home');
+        }).catch(function () {
+            console.log('获取时间出错');
+        });
+    }
+
     render() {
         return(
             <View style={{flex:1}}>
@@ -28,7 +41,7 @@ export default class QueueDetail extends React.Component{
                     <View>
                         <Text>餐桌类型</Text>
                         <WhiteSpace />
-                        <Text>小桌（1-4人）</Text>
+                        <Text>{this.props.navigation.state.params.queueInfo.queue.tableType.describe}（{this.props.navigation.state.params.queueInfo.queue.tableType.eatMinNumber}-{this.props.navigation.state.params.queueInfo.queue.tableType.eatMaxNumber}人）</Text>
                     </View>
                     </WingBlank>
                     <View>
@@ -55,8 +68,7 @@ export default class QueueDetail extends React.Component{
                     </Text>
                 </View>
                 <WhiteSpace size="xl"/>
-                <WingBlank><Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}}>取消排队</Button></WingBlank>
-
+                <WingBlank><Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this._cancel.bind(this)}>取消排队</Button></WingBlank>
             </View>
         )
 

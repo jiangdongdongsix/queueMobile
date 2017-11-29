@@ -83,7 +83,6 @@ export default class MyHomeScreen extends React.Component {
                     that.props.navigation.navigate('queue',{shopInfo:info});
                 }
             }).catch((error) => {
-            console.log(error);
         });
     }
 
@@ -108,8 +107,6 @@ export default class MyHomeScreen extends React.Component {
 
 
     renderqueinfo(item){
-        console.log("66666");
-        console.log(item);
         return (
             <View style={styles.queueItem}>
                 <Text>小桌{item.tableType.eatMinNumber}-{item.tableType.eatMaxNumber}</Text>
@@ -124,7 +121,6 @@ export default class MyHomeScreen extends React.Component {
 
 
     renderItem(item) {
-        console.log(item);
         return (
             <View style={styles.shopContent}>
                 <View style={styles.shop}>
@@ -132,10 +128,13 @@ export default class MyHomeScreen extends React.Component {
                         <WingBlank><Text>{item.restaurantInfo.name}</Text></WingBlank>
                         <View style={styles.buttonList}>
                             <Button type="primary" size="small"
-                                    style={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}>菜单预览</Button>
+                                    style={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
+                                    activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
+                            >菜单预览</Button>
                             <WingBlank>
                                 <Button type="primary" size="small"
                                         style={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
+                                        activeStyle={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
                                         onClick={this.goQueue.bind(this,item)}>排队取号</Button>
 
                             </WingBlank>
@@ -167,7 +166,6 @@ export default class MyHomeScreen extends React.Component {
     }
 
     render() {
-        console.log(this.state.data);
         return (
             <View style={{flex: 1}}>
                 {this.state.dataFlag ?

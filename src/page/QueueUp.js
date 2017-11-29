@@ -30,23 +30,6 @@ export default class QueueUp extends React.Component {
         };
     }
 
-    //展示模态窗口
-    showModal = key => (e) => {
-        e.preventDefault(); // 修复 Android 上点击穿透
-        this.setState({
-            [key]: true,
-        });
-    }
-
-
-    //关闭模态窗口
-    onClose = key => () => {
-        this.setState({
-            [key]: false,
-        });
-    }
-
-
     setModalVisible(visible) {
         this.setState({modalVisible: visible});
     }
@@ -92,7 +75,6 @@ export default class QueueUp extends React.Component {
 
     //改变用餐人数
     _changeEatNuber= (value) => {
-        console.log(value)
         this.setState({
             eatNumber:value
         });
@@ -111,7 +93,6 @@ export default class QueueUp extends React.Component {
 
     //改变座位号
     _changeSeatNumber= (value) =>{
-        console.log(value)
         this.setState({
             seatNumber:value
         });
@@ -131,7 +112,6 @@ export default class QueueUp extends React.Component {
 
     //更新虚拟排队
     updataQueueData(info){
-        console.log(info);
         const that = this;
         fetch(url + '/iqescloud/app/queue/virtualQueue', {
             method: 'PUT',
@@ -143,7 +123,6 @@ export default class QueueUp extends React.Component {
         }).then(function(response) {
             return response.json();
         }).then(function (jsonData) {
-            console.log(jsonData);
             that.setState({ queueInfo: {
                 describe:jsonData.localResponse.queueInfo.tableType.describe,
                 eatMaxNumber:jsonData.localResponse.queueInfo.tableType.eatMaxNumber,
@@ -176,7 +155,8 @@ export default class QueueUp extends React.Component {
             console.log(jsonData);
             let info = {
                 queue:jsonData.localResponse.queueInfo,
-                restaurantInfo:this.props.navigation.state.params.shopInfo.restaurantInfo
+                restaurantInfo:that.props.navigation.state.params.shopInfo.restaurantInfo,
+                restaurantId:jsonData.localResponse.restaurantId
             }
             console.log(info);
             if (jsonData.ErrorCode === '0') {
@@ -189,15 +169,12 @@ export default class QueueUp extends React.Component {
     }
 
     componentWillUnmount(){
-        console.log("33333")
-        console.log(this.state.IsQueueSuccess);
         if(!this.state.IsQueueSuccess){
             fetch(url + '/iqescloud/app/queue/queueInfo/id?queueId='+this.props.navigation.state.params.shopInfo.queueId +'&restaurantId='+this.props.navigation.state.params.shopInfo.restaurantId, {
                 method: 'DELETE',
             }).then(function(response) {
                 return response.json();
             }).then(function (jsonData) {
-                console.log(jsonData);
             }).catch(function () {
                 console.log('获取时间出错');
             });
@@ -230,9 +207,12 @@ export default class QueueUp extends React.Component {
                            <Text style={{color:'black'}}>座位</Text>
                        </WingBlank>
                        <View style={styles.buttonList}>
-                           <Button  size="small" type="primary" style={{backgroundColor: this.state.IsSeat? 'grey' : '#ffa500',borderColor:this.state.IsSeat? 'grey' : '#ffa500'}} onClick={this.changeSeatFlag}>系统自动匹配座位</Button>
+                           <Button  size="small" type="primary" style={{backgroundColor: this.state.IsSeat? 'grey' : '#ffa500',borderColor:this.state.IsSeat? 'grey' : '#ffa500'}}
+                                    activeStyle={{backgroundColor: this.state.IsSeat? 'grey' : '#ffa500',borderColor:this.state.IsSeat? 'grey' : '#ffa500'}}   onClick={this.changeSeatFlag}>系统自动匹配座位</Button>
                            <WingBlank>
-                               <Button  size="small" type="primary" style={{backgroundColor:this.state.IsSeat? '#ffa500' : 'grey',borderColor:this.state.IsSeat? '#ffa500' : 'grey'}} onClick={this.changeSeatFlagSelf}>自选用餐位置</Button>
+                               <Button  size="small" type="primary" style={{backgroundColor:this.state.IsSeat? '#ffa500' : 'grey',borderColor:this.state.IsSeat? '#ffa500' : 'grey' }}
+                                        activeStyle={{backgroundColor:this.state.IsSeat? '#ffa500' : 'grey',borderColor:this.state.IsSeat? '#ffa500' : 'grey' }}
+                                        onClick={this.changeSeatFlagSelf}>自选用餐位置</Button>
                            </WingBlank>
                    </View>
                </View>
@@ -280,7 +260,10 @@ export default class QueueUp extends React.Component {
                </View>
                <WingBlank><Text style={{fontSize:px2dp(10),color:'#ffa500'}}>*建议您输入手机号码，方便我们短信通知</Text></WingBlank>
                <WhiteSpace size="xl"/>
-               <WingBlank><Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}} onClick={this._queue.bind(this)}>立即取号</Button></WingBlank>
+               <WingBlank><Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}}
+                                  onClick={this._queue.bind(this)}
+                                  activeStyle={{backgroundColor:'#ffa500',borderColor:'#ffa500'}}
+                                 >立即取号</Button></WingBlank>
            </View>
                <Modal
                    animationType={"slide"}
@@ -304,7 +287,6 @@ export default class QueueUp extends React.Component {
                                source={seatImg}
                            />
                        </Lightbox>
-
                    </ScrollView>
                </Modal>
            </ScrollView>
