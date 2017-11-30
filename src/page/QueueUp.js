@@ -131,7 +131,6 @@ export default class QueueUp extends React.Component {
                 waitTime:jsonData.localResponse.queueInfo.waitTime
             } });
         }).catch(function () {
-            console.log('获取时间出错');
         });
     }
 
@@ -147,23 +146,24 @@ export default class QueueUp extends React.Component {
             IsQueueSuccess:true
         })
         const that = this;
-        fetch(url + '/iqescloud/app/queue/confirmQueue?queueId='+this.props.navigation.state.params.shopInfo.queueId +'&tel='+ this.state.customerTel+'&restaurantId='+this.props.navigation.state.params.shopInfo.restaurantId, {
+        fetch(url + '/iqescloud/app/queue/confirmQueue?queueId='
+              +this.props.navigation.state.params.shopInfo.queueId +'&tel='
+              + this.state.customerTel+'&restaurantId='
+              +this.props.navigation.state.params.shopInfo.restaurantId+'&userId='+
+              this.props.navigation.state.params.shopInfo.userId, {
             method: 'PATCH',
         }).then(function(response) {
             return response.json();
         }).then(function (jsonData) {
-            console.log(jsonData);
             let info = {
                 queue:jsonData.localResponse.queueInfo,
                 restaurantInfo:that.props.navigation.state.params.shopInfo.restaurantInfo,
                 restaurantId:jsonData.localResponse.restaurantId
             }
-            console.log(info);
             if (jsonData.ErrorCode === '0') {
                 that.props.navigation.navigate('detail',{queueInfo:info});
             }
         }).catch(function () {
-            console.log('获取时间出错');
         });
 
     }
@@ -176,7 +176,6 @@ export default class QueueUp extends React.Component {
                 return response.json();
             }).then(function (jsonData) {
             }).catch(function () {
-                console.log('获取时间出错');
             });
         }
     }

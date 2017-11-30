@@ -17,6 +17,10 @@ export default class MyHomeScreen extends React.Component {
         this.state = {
             data: [],
             dataFlag:true,
+            id:'',
+            login:false,
+            name:"",
+
         }
     }
 
@@ -55,8 +59,8 @@ export default class MyHomeScreen extends React.Component {
         tabBarLabel: '首页', // 设置标签栏的title。推荐这个方式。
     }
 
-    goQueue(item) {
-        console.log(item);
+
+    vitural(userinfo,item){
         let that = this;
         fetch(url + "/iqescloud/app/queue/virtualQueue",{
             method: 'POST',
@@ -67,7 +71,7 @@ export default class MyHomeScreen extends React.Component {
             body: JSON.stringify({
                 restaurantId: item.restaurantId,
                 queueInfo:{
-                    customerName:"test02",
+                    customerName:userinfo.name,
                 },
             })
         })
@@ -77,13 +81,54 @@ export default class MyHomeScreen extends React.Component {
                 let info = {
                     restaurantId:responseJson.localResponse.restaurantId,
                     queueId:responseJson.localResponse.id,
-                    restaurantInfo:item.restaurantInfo
+                    restaurantInfo:item.restaurantInfo,
+                    userId:userinfo.id
                 }
                 if (responseJson.ErrorCode === '0') {
                     that.props.navigation.navigate('queue',{shopInfo:info});
                 }
-            }).catch((error) => {
+            }).catch((err) => {
         });
+    }
+
+    goQueue(item) {
+        let that = this;
+        let userinfo = null;
+        storage.load({
+            key: 'userInfo',
+            autoSync: true,
+            syncInBackground: true,
+            syncParams: {
+                extraFetchOptions: {
+                },
+                someFlag: true,
+            },
+        }).then(ret => {
+            userinfo= {
+                id:ret.id,
+                name:ret.userName,
+                login:true
+            };
+            that.vitural(userinfo,item);
+        }).catch(err => {
+            //如果没有找到数据且没有sync方法，
+            //或者有其他异常，则在catch中返回
+            // console.warn(err.message);
+            switch (err.name) {
+                case 'NotFoundError':
+                    that.props.navigation.navigate('login');
+                    break;
+                case 'ExpiredError':
+                    // TODO
+                    break;
+            }
+        });
+
+
+
+
+
+
     }
 
     componentWillMount() {
@@ -91,7 +136,6 @@ export default class MyHomeScreen extends React.Component {
         fetch(url + "/iqescloud/app/homePage")
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 if (responseJson.ErrorCode === '0') {
                     that.setState({
                         data: responseJson.restaurantList
