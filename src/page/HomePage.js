@@ -109,6 +109,9 @@ export default class MyHomeScreen extends React.Component {
         });
     }
 
+    _keyExtractor = (item, index) => item.restaurantId;
+
+    _keyExtractor2 = (item, index) => item.tableType.id;
 
     renderqueinfo(item){
         return (
@@ -117,7 +120,6 @@ export default class MyHomeScreen extends React.Component {
                 <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>正在排队{item.waitPopulation}桌</Text>
                 <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>约{item.waitTime}分钟</Text>
             </View>
-
         )
     }
 
@@ -132,6 +134,7 @@ export default class MyHomeScreen extends React.Component {
                             <Button type="primary" size="small"
                                     style={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
                                     activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
+                                    onClick = {() => this.props.navigation.navigate('menu')}
                             >菜单预览</Button>
                             <WingBlank>
                                 <Button type="primary" size="small"
@@ -156,6 +159,7 @@ export default class MyHomeScreen extends React.Component {
                                     ({item}) => this.renderqueinfo(item)
                                     }
                                 style={{width: px2dw(250) }}
+                                keyExtractor={this._keyExtractor2}
                             />
 
                     </View>
@@ -175,6 +179,7 @@ export default class MyHomeScreen extends React.Component {
                 <FlatList
                 data={this.state.data}
                 renderItem={({item}) => this.renderItem(item)}
+                keyExtractor={this._keyExtractor}
                 />
                 :
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
