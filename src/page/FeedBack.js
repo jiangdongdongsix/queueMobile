@@ -25,6 +25,12 @@ export default class FeedBack extends React.Component {
         });
     };
 
+
+
+
+
+
+
     handleSubmit(){
         let that = this;
         // 读取
@@ -55,6 +61,9 @@ export default class FeedBack extends React.Component {
             // 你也可以使用“看似”同步的async/await语法
 
             console.log(ret.id);
+            that.setState({
+                id:ret.id
+            })
         }).catch(err => {
             //如果没有找到数据且没有sync方法，
             //或者有其他异常，则在catch中返回
@@ -67,7 +76,7 @@ export default class FeedBack extends React.Component {
                     // TODO
                     break;
             }
-        })
+        });
 
 
         let Info = {
@@ -93,6 +102,8 @@ export default class FeedBack extends React.Component {
         //     console.log('网络连接错误');
         // });
     }
+
+
     render() {
         return (
             <View style={styles.feedbackBg}>
