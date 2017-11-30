@@ -1,155 +1,106 @@
 import React, { Component } from 'react';
-import { StyleSheet,Image,View,Text,ImageBackground,Modal,Animated,TouchableOpacity,TextInput } from 'react-native';
-import { Button,Progress,List,Tabs,WhiteSpaceMenu, ActivityIndicator, NavBar } from 'antd-mobile';
+import {Image, View, StyleSheet, Text, FlatList} from 'react-native';
+import {Button, WingBlank, WhiteSpace} from 'antd-mobile';
 import px2dp from '../utils/px2pd';
-/**
- *  菜单预览
- */
+const shop = require('../images/pic1.png');
 
-const data = [
-    {
-        value: '1',
-        label: 'Food',
-        children: [
-            {
-                label: 'All Foods',
-                value: '1',
-                disabled: false,
-            },
-            {
-                label: 'Chinese Food',
-                value: '2',
-            }, {
-                label: 'Hot Pot',
-                value: '3',
-            }, {
-                label: 'Buffet',
-                value: '4',
-            }, {
-                label: 'Fast Food',
-                value: '5',
-            }, {
-                label: 'Snack',
-                value: '6',
-            }, {
-                label: 'Bread',
-                value: '7',
-            }, {
-                label: 'Fruit',
-                value: '8',
-            }, {
-                label: 'Noodle',
-                value: '9',
-            }, {
-                label: 'Leisure Food',
-                value: '10',
-            }],
-    }, {
-        value: '2',
-        label: 'Supermarket',
-        children: [
-            {
-                label: 'All Supermarkets',
-                value: '1',
-            }, {
-                label: 'Supermarket',
-                value: '2',
-                disabled: true,
-            }, {
-                label: 'C-Store',
-                value: '3',
-            }, {
-                label: 'Personal Care',
-                value: '4',
-            }],
-    },
-    {
-        value: '3',
-        label: 'Extra',
-        isLeaf: true,
-        children: [
-            {
-                label: 'you can not see',
-                value: '1',
-            },
-        ],
-    },
-];
+export default class SectionListBasics extends Component {
 
-export default class Menu extends React.Component {
-    static navigationOptions ={
-        title:'菜单预览',
-    };
-    constructor(...args) {
-        super(...args);
+    constructor(props) {
+        super(props);
         this.state = {
-            initData: '',
-            show: false,
-        };
-    }
-    onChange = (value) => {
-        let label = '';
-        data.forEach((dataItem) => {
-            if (dataItem.value === value[0]) {
-                label = dataItem.label;
-                if (dataItem.children && value[1]) {
-                    dataItem.children.forEach((cItem) => {
-                        if (cItem.value === value[1]) {
-                            label += ` ${cItem.label}`;
-                        }
-                    });
-                }
-            }
-        });
-        console.log(label);
-    }
-    handleClick = (e) => {
-        e.preventDefault(); // Fix event propagation on Android
-        this.setState({
-            show: !this.state.show,
-        });
-        // mock for async data loading
-        if (!this.state.initData) {
-            setTimeout(() => {
-                this.setState({
-                    initData: data,
-                });
-            }, 500);
+            data: [],
+            dataFlag:true,
         }
     }
 
-    onMaskClick = () => {
-        this.setState({
-            show: false,
+    static navigationOptions ={
+        title:'菜单预览',
+    };
+
+
+    componentWillMount() {
+        const that = this;
+        fetch(url + "/iqescloud/app/menus?restaurantId=1")
+            .then((response) => response.json())
+            .then((responseJson) => {
+                console.log(responseJson);
+                if (responseJson.ErrorCode === '0') {
+                    that.setState({
+                        data: responseJson.menus.menus
+                    })
+                }else {
+                    that.setState({
+                        dataFlag:false
+                    })
+                }
+
+            }).catch((error) => {
+            that.setState({
+                dataFlag:false
+            })
         });
     }
 
-    render() {
-        const { initData, show } = this.state;
-        const menuEl = (
-            <Menu
-                className="foo-menu"
-                data={initData}
-                value={['1', '3']}
-                onChange={this.onChange}
-            />
-        );
-        return (
-            <View className={show ? 'menu-active' : ''}>
+    _keyExtractor = (item, index) => item.id;
+
+
+
+    renderItem(item) {
+        return(
+            <View style={{flexDirection:'row',alignItems:'center',marginTop:px2dp(10),backgroundColor:'white'}}>
+                <WingBlank>
+                    <Image
+                        source={shop}
+                        style={{height: 85, width: 85}}
+                    />
+                </WingBlank>
+
                 <View>
-                    <NavBar
-                        leftContent="Menu"
-                        mode="light"
-                        icon={<img src="https://gw.alipayobjects.com/zos/rmsportal/iXVHARNNlmdCGnwWxQPH.svg" className="am-icon am-icon-md" alt="" />}
-                        onLeftClick={this.handleClick}
-                        className="top-nav-bar"
-                    >
-                        Here is title
-                    </NavBar>
+                    <Text style={{fontSize:px2dp(15)}}>{item.menuName}</Text>
+                    <Text style={{marginTop:px2dp(5),color:"#ff4500"}}>￥{item.memberMenuPrice}</Text>
                 </View>
-                {show ? <View className="menu-mask" onClick={this.onMaskClick} /> : null}
+            </View>
+        )
+    }
+
+    render() {
+        return (
+            <View style={{flex: 1}}>
+                {this.state.dataFlag ?
+                    <FlatList
+                        data={this.state.data}
+                        renderItem={({item}) => this.renderItem(item)}
+                        keyExtractor={this._keyExtractor}
+                    />
+                    :
+                    <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                        <Text>网络出现故障</Text>
+                    </View>
+                }
+
             </View>
         );
     }
 }
 
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingTop: 22
+    },
+    sectionHeader: {
+        paddingTop: 2,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingBottom: 2,
+        fontSize: 14,
+        fontWeight: 'bold',
+        backgroundColor: 'rgba(247,247,247,1.0)',
+    },
+    item: {
+        padding: 10,
+        fontSize: 18,
+        height: 44,
+    },
+})

@@ -107,58 +107,11 @@ export default class MyHomeScreen extends React.Component {
                     dataFlag:false
                 })
         });
-
-        storage.save({
-            key: 'loginState',   // Note: Do not use underscore("_") in key!
-            data: {
-                from: 'some other site',
-                userid: 'some userid',
-                token: 'some token'
-            },
-
-            // if not specified, the defaultExpires will be applied instead.
-            // if set to null, then it will never expire.
-            expires: 1000 * 3600
-        });
-
-        storage.load({
-            key: 'loginState',
-            // autoSync(default true) means if data not found or expired,
-            // then invoke the corresponding sync method
-            autoSync: true,
-
-            // syncInBackground(default true) means if data expired,
-            // return the outdated data first while invoke the sync method.
-            // It can be set to false to always return data provided by sync method when expired.(Of course it's slower)
-            syncInBackground: true,
-
-            // you can pass extra params to sync method
-            // see sync example below for example
-            syncParams: {
-                extraFetchOptions: {
-                    // blahblah
-                },
-                someFlag: true,
-            },
-        }).then(ret => {
-            // found data go to then()
-            console.log(ret.userid);
-        }).catch(err => {
-            // any exception including data not found
-            // goes to catch()
-            console.warn(err.message);
-            switch (err.name) {
-                case 'NotFoundError':
-                    console.log("77777");
-                    break;
-                case 'ExpiredError':
-                    // TODO
-                    console.log("77777");
-                    break;
-            }
-        })
     }
 
+    _keyExtractor = (item, index) => item.restaurantId;
+
+    _keyExtractor2 = (item, index) => item.tableType.id;
 
     renderqueinfo(item){
         return (
@@ -167,7 +120,6 @@ export default class MyHomeScreen extends React.Component {
                 <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>正在排队{item.waitPopulation}桌</Text>
                 <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>约{item.waitTime}分钟</Text>
             </View>
-
         )
     }
 
@@ -207,6 +159,7 @@ export default class MyHomeScreen extends React.Component {
                                     ({item}) => this.renderqueinfo(item)
                                     }
                                 style={{width: px2dw(250) }}
+                                keyExtractor={this._keyExtractor2}
                             />
 
                     </View>
@@ -226,6 +179,7 @@ export default class MyHomeScreen extends React.Component {
                 <FlatList
                 data={this.state.data}
                 renderItem={({item}) => this.renderItem(item)}
+                keyExtractor={this._keyExtractor}
                 />
                 :
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
