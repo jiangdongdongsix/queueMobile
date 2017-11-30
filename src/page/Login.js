@@ -8,7 +8,7 @@ const tabs = [
     {title:'账号密码登录'},
     {title:'手机号快速登录'},
 ];
-export default class LoginModal extends React.Component {
+export default class Login extends React.Component {
     constructor(props){
         super(props);
         this.state = {
@@ -18,7 +18,7 @@ export default class LoginModal extends React.Component {
     }
 
     onClose = ()=>{
-
+        this.props.navigation.navigate('Home');
     };
 
 
@@ -26,51 +26,6 @@ export default class LoginModal extends React.Component {
         this.props.navigation.navigate('feedback');
     };
 
-    handleInputUser(user){
-        let that = this;
-        that.setState({user:user});
-    }
-
-    handleInputPwd(pwd){
-        let that = this;
-        that.setState({ pwd: pwd });
-    }
-
-    handleSignIn(){
-        let that = this;
-        fetch(url + '/iqescloud/app/user/login?tel=' + that.state.user +'&password=' + that.state.pwd)
-            .then(function(response) {
-                return response.json();
-            }).then(function (jsonData) {
-            console.log(jsonData);
-            that.setState({
-                modal:false,
-                name:jsonData.user.userName,
-                rvalue:jsonData.user.creditValue,
-                percent: jsonData.user.creditValue,
-                score:jsonData.user.memberIntegral,
-                login:true
-            });
-            storage.save({
-                key:'userInfo',
-                data: {
-                    "creditValue":jsonData.user.creditValue,
-                    "id":jsonData.user.id,
-                    "memberIntegral":jsonData.user.memberIntegral,
-                    "password":jsonData.user.password,
-                    "tel":jsonData.user.tel,
-                    "userName":jsonData.user.userName
-                },
-                expires: 1000 * 3600
-            });
-            console.log(storage);
-            if(jsonData.ErrorCode === '0'){
-                console.log('登录成功');
-            }
-        }).catch(function () {
-            console.log('登录失败');
-        });
-    }
     render(){
         return (
             <View style={styles.LoginModal}>
@@ -106,7 +61,7 @@ export default class LoginModal extends React.Component {
                                 </TextInput>
                             </View>
                             <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                <Button onClick={this.handleSignIn} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
+                                <Button type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
                             </View>
                         </View>
 
@@ -138,7 +93,7 @@ export default class LoginModal extends React.Component {
                             </View>
                             <Text style={styles.LoginTabsPhoneVerifyMess}>验证码将以短信形式发送至您手机，请注意查收</Text>
                             <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                <Button onClick={this.handleSignIn} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
+                                <Button  type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
                             </View>
                         </View>
                     </Tabs>
