@@ -6,7 +6,7 @@ import Menu from '../page/Menu';
 import SignUp from '../page/SignUp';
 import QueueDetail from '../page/QueueDetail';
 import FeedBack from '../page/FeedBack';
-import LoginModal from '../components/LoginModal';
+import Signin from '../page/Login';
 
 /**
  * 项目路由器
@@ -22,7 +22,7 @@ const Routes = StackNavigator({
     signUp:{screen:SignUp},
     detail:{path:'detail/:queueInfo',screen: QueueDetail},
     feedback:{screen: FeedBack},
-    login:{screen:LoginModal}
+    signin:{screen:Signin}
 
 });
 

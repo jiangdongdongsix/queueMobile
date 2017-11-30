@@ -82,7 +82,7 @@ export default class MyOrder extends React.Component {
             // }
         });
 
-        fetch(url + '/iqescloud/app/user/order/userName?userName=test&restaurantId=1').then(function(response) {
+        fetch(url + '/iqescloud/app/user/order/userId?userId=' + that.state.userId+ '&restaurantId=1').then(function(response) {
             return response.json();
         }).then(function (jsonData) {
             console.log(jsonData.localResponse);
@@ -120,7 +120,7 @@ export default class MyOrder extends React.Component {
                 });
             }
         }).catch(function () {
-            console.log('查看排队失败');
+            console.log('获取我的订单失败');
         });
     };
 
