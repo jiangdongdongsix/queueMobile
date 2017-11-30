@@ -227,7 +227,7 @@ export default class MyInfo extends React.Component {
                 <View style={styles.InfoList}>
                     <View style={{flex:4}}>
                         <List style={styles.InfoListItems} key={1}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.initOrder}>我的订单</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === false ? ()=>{}:this.initOrder}>我的订单</Item>
                         </List>
                         <List style={styles.InfoListItems} key={2}>
                             <Item extra={this.state.score} thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png">会员积分</Item>
