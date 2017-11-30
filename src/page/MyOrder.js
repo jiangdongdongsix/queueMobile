@@ -147,28 +147,29 @@ export default class MyOrder extends React.Component {
 
 
         const historyElements=[];
-        for(let history of that.state.history){
-            if(that.state.history.queueId === ''){
+        if(that.state.history.length>0){
+            for(let history of that.state.history) {
                 historyElements.push(
-                    <View><Text>没有相关订单</Text></View>
-                )
-            }else{
-                    historyElements.push(
-                        <View style={styles.OrderList} key={history.key}>
-                            <View style={styles.OrderListL}>
-                                <Text style={styles.OrderTime}>取号时间:{history.queueStartTime}</Text>
-                                <View style={{flexDirection:'row'}}>
-                                    <Text style={styles.OrderTime}>完成时间:{history.queueEndTime}</Text>
-                                </View>
+                    <View style={styles.OrderList} key={history.key}>
+                        <View style={styles.OrderListL}>
+                            <Text style={styles.OrderTime}>取号时间:{history.queueStartTime}</Text>
+                            <View style={{flexDirection: 'row'}}>
+                                <Text style={styles.OrderTime}>完成时间:{history.queueEndTime}</Text>
                             </View>
-                            <View style={styles.OrderListR}>
-                                <Text style={styles.OrderListRNumber}>{history.queueId}</Text>
-                                <Text style={{color:'orange',paddingBottom:8}}>{history.tableTypeDescribe}</Text>
-                                <Text>({history.eatMinNumber}-{history.eatMaxNumber})人</Text>
-                            </View>
-                        </View>)
+                        </View>
+                        <View style={styles.OrderListR}>
+                            <Text style={styles.OrderListRNumber}>{history.queueId}</Text>
+                            <Text style={{color: 'orange', paddingBottom: 8}}>{history.tableTypeDescribe}</Text>
+                            <Text>({history.eatMinNumber}-{history.eatMaxNumber})人</Text>
+                        </View>
+                    </View>)
             }
+        }else{
+            historyElements.push(
+                <View><Text>没有相关订单</Text></View>
+            )
         }
+
         return (
             <View style={styles.Order}>
                 <Tabs tabs={tabs} initialPage={0}>
