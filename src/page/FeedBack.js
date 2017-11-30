@@ -109,7 +109,7 @@ export default class FeedBack extends React.Component {
                     <Text>添加照片</Text>
                 </View>
                 <View style={{flex:1}}>
-                    <Button type="primary" style={{backgroundColor:'#F27241',borderWidth:0}} onClick={this.handleSubmit.bind(this)}>提交</Button>
+                    <Button type="primary" style={{backgroundColor:'#F27241',borderWidth:0}} activeStyle={{backgroundColor:'#F27241',borderWidth:0}} onClick={this.handleSubmit.bind(this)}>提交</Button>
                 </View>
             </View>
             );
