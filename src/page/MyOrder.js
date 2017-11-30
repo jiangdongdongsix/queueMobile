@@ -17,16 +17,7 @@ export default class MyOrder extends React.Component {
         restaurantId:1,
         userId:'',
         unused:[],
-        history:[
-            {   queueId: '',
-                eatMinNumber: '',
-                eatMaxNumber: '',
-                queueEndTime: '',
-                queueStartTime: '',
-                tableTypeDescribe: '',
-                key:''
-            }
-        ]
+        history:[]
     };
 
     componentWillMount(){
