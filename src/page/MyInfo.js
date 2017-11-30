@@ -273,7 +273,7 @@ export default class MyInfo extends React.Component {
                                                             </TextInput>
                                                         </View>
                                                         <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                                            <Button onClick={this.handleSignIn.bind(this)} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
+                                                            <Button onClick={this.handleSignIn.bind(this)} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}} activeStyle={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
                                                         </View>
                                                     </View>
 
