@@ -67,7 +67,7 @@ export default class MyInfo extends React.Component {
 
     initFeedback = ()=>{
         this.props.navigation.navigate('feedback');
-    }
+    };
 
     _handleBack() {
         const navigator = this.props.navigator;
@@ -105,7 +105,10 @@ export default class MyInfo extends React.Component {
             score:'--',
             login:false
         });
-    }
+        storage.remove({
+            key: 'userInfo'
+        })
+    };
 
 
     handleSignIn(){
@@ -122,45 +125,6 @@ export default class MyInfo extends React.Component {
                 percent: jsonData.user.creditValue,
                 score:jsonData.user.memberIntegral,
                 login:true
-            });
-            storage.load({
-                key: 'userInfo',
-                // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
-                autoSync: true,
-
-                // syncInBackground(默认为true)意味着如果数据过期，
-                // 在调用sync方法的同时先返回已经过期的数据。
-                // 设置为false的话，则等待sync方法提供的最新数据(当然会需要更多时间)。
-                syncInBackground: true,
-
-                // 你还可以给sync方法传递额外的参数
-                syncParams: {
-                    extraFetchOptions: {
-                        // 各种参数
-                    },
-                    someFlag: true,
-                },
-            }).then(ret => {
-                // 如果找到数据，则在then方法中返回
-                // 注意：这是异步返回的结果（不了解异步请自行搜索学习）
-                // 你只能在then这个方法内继续处理ret数据
-                // 而不能在then以外处理
-                // 也没有办法“变成”同步返回
-                // 你也可以使用“看似”同步的async/await语法
-
-                console.log(ret.id);
-            }).catch(err => {
-                //如果没有找到数据且没有sync方法，
-                //或者有其他异常，则在catch中返回
-                console.warn(err.message);
-                switch (err.name) {
-                    case 'NotFoundError':
-                        console.log('丑九怪');
-                        break;
-                    case 'ExpiredError':
-                        // TODO
-                        break;
-                }
             });
             storage.save({
                 key:'userInfo',
@@ -183,6 +147,55 @@ export default class MyInfo extends React.Component {
         });
     }
 
+    componentWillMount(){
+        let that = this;
+        storage.load({
+            key: 'userInfo',
+            // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
+            autoSync: true,
+
+            // syncInBackground(默认为true)意味着如果数据过期，
+            // 在调用sync方法的同时先返回已经过期的数据。
+            // 设置为false的话，则等待sync方法提供的最新数据(当然会需要更多时间)。
+            syncInBackground: true,
+            // 你还可以给sync方法传递额外的参数
+            syncParams: {
+                extraFetchOptions: {
+                    // 各种参数
+                },
+                someFlag: true,
+            },
+        }).then(ret => {
+            // 如果找到数据，则在then方法中返回
+            // 注意：这是异步返回的结果（不了解异步请自行搜索学习）
+            // 你只能在then这个方法内继续处理ret数据
+            // 而不能在then以外处理
+            // 也没有办法“变成”同步返回
+            // 你也可以使用“看似”同步的async/await语法
+            console.log(ret.id);
+            console.log(ret);
+            that.setState({
+                modal:false,
+                name:ret.userName,
+                rvalue:ret.creditValue,
+                percent: ret.creditValue,
+                score:ret.memberIntegral,
+                login:true
+            });
+        }).catch(err => {
+            //如果没有找到数据且没有sync方法，
+            //或者有其他异常，则在catch中返回
+            console.warn(err.message);
+            switch (err.name) {
+                case 'NotFoundError':
+                    console.log('丑九怪');
+                    break;
+                case 'ExpiredError':
+                    // TODO
+                    break;
+            }
+        });
+    }
     render() {
         const { percent,name,rvalue } = this.state;
         return (
@@ -214,7 +227,7 @@ export default class MyInfo extends React.Component {
                 <View style={styles.InfoList}>
                     <View style={{flex:4}}>
                         <List style={styles.InfoListItems} key={1}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === false ? ()=>{}: this.initOrder}>我的订单</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === false ? ()=>{}:this.initOrder}>我的订单</Item>
                         </List>
                         <List style={styles.InfoListItems} key={2}>
                             <Item extra={this.state.score} thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png">会员积分</Item>

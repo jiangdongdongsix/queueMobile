@@ -26,25 +26,17 @@ export default class FeedBack extends React.Component {
     };
 
 
-
-
-
-
-
     handleSubmit(){
         let that = this;
         // 读取
         storage.load({
             key: 'userInfo',
-
             // autoSync(默认为true)意味着在没有找到数据或数据过期时自动调用相应的sync方法
             autoSync: true,
-
             // syncInBackground(默认为true)意味着如果数据过期，
             // 在调用sync方法的同时先返回已经过期的数据。
             // 设置为false的话，则等待sync方法提供的最新数据(当然会需要更多时间)。
             syncInBackground: true,
-
             // 你还可以给sync方法传递额外的参数
             syncParams: {
                 extraFetchOptions: {
@@ -59,11 +51,27 @@ export default class FeedBack extends React.Component {
             // 而不能在then以外处理
             // 也没有办法“变成”同步返回
             // 你也可以使用“看似”同步的async/await语法
-
             console.log(ret.id);
             that.setState({
-                id:ret.id
-            })
+                id:ret.id.toString()
+            });
+            fetch(url + '/iqescloud/app/user/feedback?userId='+ that.state.id +'&context=' + that.state.advice, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            }).then(function(response) {
+                return response.json();
+            }).then(function (jsonData) {
+                console.log(jsonData);
+                if(jsonData.ErrorCode === '0'){
+                    console.log('反馈成功');
+                };
+                that.props.navigation.navigate('Home');
+            }).catch(function () {
+                console.log('网络连接错误');
+            });
         }).catch(err => {
             //如果没有找到数据且没有sync方法，
             //或者有其他异常，则在catch中返回
@@ -77,30 +85,6 @@ export default class FeedBack extends React.Component {
                     break;
             }
         });
-
-
-        let Info = {
-            userId:this.state.id,
-            context:this.state.advice
-        };
-        console.log(Info);
-
-
-        // fetch(url + '/iqescloud/app/user/feedback', {
-        //         method: 'POST',
-        //         headers: {
-        //             'Accept': 'application/json',
-        //             'Content-Type': 'application/json'
-        //         },
-        //         body:JSON.stringify(Info)
-        //     }).then(function(response) {
-        //     return response.json();
-        // }).then(function (jsonData) {
-        //     console.log(jsonData);
-        //     that.successRegister();
-        // }).catch(function () {
-        //     console.log('网络连接错误');
-        // });
     }
 
 
