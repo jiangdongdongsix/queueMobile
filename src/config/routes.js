@@ -6,6 +6,8 @@ import Menu from '../page/Menu';
 import SignUp from '../page/SignUp';
 import QueueDetail from '../page/QueueDetail';
 import FeedBack from '../page/FeedBack';
+import LoginModal from '../components/LoginModal';
+
 /**
  * 项目路由器
  * StackNavigator ：堆栈路由器
@@ -17,9 +19,11 @@ const Routes = StackNavigator({
     queue:{ path:'queue/:shopInfo',screen: QueueUp },
     order:{ screen: Order},
     menu:{screen: Menu},
-    signUp:{screen : SignUp},
+    signUp:{screen:SignUp},
     detail:{path:'detail/:queueInfo',screen: QueueDetail},
-    feedback:{screen: FeedBack}
+    feedback:{screen: FeedBack},
+    login:{screen:LoginModal}
+
 });
 
 export default Routes;
