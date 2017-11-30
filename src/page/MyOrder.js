@@ -68,6 +68,47 @@ export default class MyOrder extends React.Component {
             that.setState({
                 userId:ret.id
             });
+            console.log(that.state.userId);
+            fetch(url + '/iqescloud/app/user/order/userId?userId=' + that.state.userId+ '&restaurantId=1').then(function(response) {
+                return response.json();
+            }).then(function (jsonData) {
+                console.log(jsonData.localResponse);
+                let historyInfo = [];
+                let unusedInfo = [];
+                let lenHistory = jsonData.localResponse.history.length;
+                let lenunused = jsonData.localResponse.unused.length;
+                for(let i=0;i<lenHistory;i++){
+                    historyInfo.push({
+                        queueId: jsonData.localResponse.history[i].queueId,
+                        eatMinNumber: jsonData.localResponse.history[i].eatMinNumber,
+                        eatMaxNumber: jsonData.localResponse.history[i].eatMaxNumber,
+                        queueEndTime: jsonData.localResponse.history[i].queueEndTime,
+                        queueStartTime: jsonData.localResponse.history[i].queueStartTime,
+                        tableTypeDescribe: jsonData.localResponse.history[i].tableTypeDescribe,
+                        key:i
+                    });
+                }
+
+                for(let i=0;i<lenunused;i++) {
+                    unusedInfo.push({
+                        queueId: jsonData.localResponse.unused[i].queueId,
+                        eatMinNumber: jsonData.localResponse.unused[i].eatMinNumber,
+                        eatMaxNumber: jsonData.localResponse.unused[i].eatMaxNumber,
+                        queueWaitTable: jsonData.localResponse.unused[i].queueWaitTable,
+                        queueWaitTime: jsonData.localResponse.unused[i].queueWaitTime,
+                        queueStartTime: jsonData.localResponse.unused[i].queueStartTime,
+                        tableTypeDescribe: jsonData.localResponse.unused[i].tableTypeDescribe,
+                        key: i
+                    });
+
+                    that.setState({
+                        history: historyInfo,
+                        unused:unusedInfo
+                    });
+                }
+            }).catch(function () {
+                console.log('获取我的订单失败');
+            });
         }).catch(err => {
             //如果没有找到数据且没有sync方法，
             //或者有其他异常，则在catch中返回
@@ -80,47 +121,6 @@ export default class MyOrder extends React.Component {
             //         // TODO
             //         break;
             // }
-        });
-
-        fetch(url + '/iqescloud/app/user/order/userId?userId=' + that.state.userId+ '&restaurantId=1').then(function(response) {
-            return response.json();
-        }).then(function (jsonData) {
-            console.log(jsonData.localResponse);
-            let historyInfo = [];
-            let unusedInfo = [];
-            let lenHistory = jsonData.localResponse.history.length;
-            let lenunused = jsonData.localResponse.unused.length;
-            for(let i=0;i<lenHistory;i++){
-                historyInfo.push({
-                    queueId: jsonData.localResponse.history[i].queueId,
-                    eatMinNumber: jsonData.localResponse.history[i].eatMinNumber,
-                    eatMaxNumber: jsonData.localResponse.history[i].eatMaxNumber,
-                    queueEndTime: jsonData.localResponse.history[i].queueEndTime,
-                    queueStartTime: jsonData.localResponse.history[i].queueStartTime,
-                    tableTypeDescribe: jsonData.localResponse.history[i].tableTypeDescribe,
-                    key:i
-                });
-            }
-
-            for(let i=0;i<lenunused;i++) {
-                unusedInfo.push({
-                    queueId: jsonData.localResponse.unused[i].queueId,
-                    eatMinNumber: jsonData.localResponse.unused[i].eatMinNumber,
-                    eatMaxNumber: jsonData.localResponse.unused[i].eatMaxNumber,
-                    queueWaitTable: jsonData.localResponse.unused[i].queueWaitTable,
-                    queueWaitTime: jsonData.localResponse.unused[i].queueWaitTime,
-                    queueStartTime: jsonData.localResponse.unused[i].queueStartTime,
-                    tableTypeDescribe: jsonData.localResponse.unused[i].tableTypeDescribe,
-                    key: i
-                });
-
-                that.setState({
-                    history: historyInfo,
-                    unused:unusedInfo
-                });
-            }
-        }).catch(function () {
-            console.log('获取我的订单失败');
         });
     };
 
