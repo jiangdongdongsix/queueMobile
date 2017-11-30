@@ -162,6 +162,7 @@ export default class MyOrder extends React.Component {
         }
 
         return (
+            <ScrollView>
             <View style={styles.Order}>
                 <Tabs tabs={tabs} initialPage={0}>
                     <View style={{flex:3}}>
@@ -172,6 +173,7 @@ export default class MyOrder extends React.Component {
                     </View>
                 </Tabs>
             </View>
+            </ScrollView>
         );
     }
 }
