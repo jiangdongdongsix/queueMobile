@@ -23,7 +23,6 @@ const Routes = StackNavigator({
     detail:{path:'detail/:queueInfo',screen: QueueDetail},
     feedback:{screen: FeedBack},
     signin:{screen:Signin}
-
 });
 
 export default Routes;
