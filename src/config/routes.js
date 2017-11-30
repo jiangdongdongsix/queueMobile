@@ -2,7 +2,7 @@ import { StackNavigator, SafeAreaView } from 'react-navigation';
 import TabList from './tabList';
 import QueueUp from '../page/QueueUp';
 import Order from '../page/MyOrder';
-import Menu from '../page/Menu';
+import SectionListBasics from '../page/Menu';
 import SignUp from '../page/SignUp';
 import QueueDetail from '../page/QueueDetail';
 import FeedBack from '../page/FeedBack';
@@ -18,7 +18,7 @@ const Routes = StackNavigator({
     home: { screen: TabList },
     queue:{ path:'queue/:shopInfo',screen: QueueUp },
     order:{ screen: Order},
-    menu:{screen: Menu},
+    menu:{screen: SectionListBasics},
     signUp:{screen:SignUp},
     detail:{path:'detail/:queueInfo',screen: QueueDetail},
     feedback:{screen: FeedBack},
