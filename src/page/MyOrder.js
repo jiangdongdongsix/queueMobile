@@ -16,17 +16,7 @@ export default class MyOrder extends React.Component {
     state = {
         restaurantId:1,
         userId:'',
-        unused:[
-            {   queueId: '',
-                eatMinNumber: '',
-                eatMaxNumber: '',
-                queueWaitTable: '',
-                queueWaitTime: '',
-                queueStartTime: '',
-                extractFlag: '',
-                key:''
-            }
-        ],
+        unused:[],
         history:[
             {   queueId: '',
                 eatMinNumber: '',
@@ -125,47 +115,59 @@ export default class MyOrder extends React.Component {
     };
 
     render() {
+        const that = this;
         const unusedElements=[];      //保存渲染以后 JSX的数组
-        for(let unused of this.state.unused){
-            console.log(unused);
+        if(that.state.unused.length >0){
+            for(let unused of that.state.unused){
+                    unusedElements.push(
+                        <View style={styles.OrderList} key={unused.key}>
+                            <View style={styles.OrderListL}>
+                                <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
+                                <View style={{flexDirection:'row'}}>
+                                    <Text style={{flex:4}}>需等待桌数</Text>
+                                    <Text style={{flex:2}}>预估时间</Text>
+                                </View>
+                                <View style={styles.OrderResult}>
+                                    <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
+                                    <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.OrderListR}>
+                                <Text style={styles.OrderListRNumber}>{unused.queueId}</Text>
+                                <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
+                                <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
+                            </View>
+                        </View>)
+            }
+        }else{
             unusedElements.push(
-                <View style={styles.OrderList} key={unused.key}>
-                    <View style={styles.OrderListL}>
-                        <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
-                        <View style={{flexDirection:'row'}}>
-                            <Text style={{flex:4}}>需等待桌数</Text>
-                            <Text style={{flex:2}}>预估时间</Text>
-                        </View>
-                        <View style={styles.OrderResult}>
-                            <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
-                            <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.OrderListR}>
-                        <Text style={styles.OrderListRNumber}>{unused.queueId}</Text>
-                        <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
-                        <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
-                    </View>
-                </View>)
+                <View style={{justifyContent:'center',alignItems:'center'}}><Text>没有相关订单</Text></View>
+            )
         }
 
+
         const historyElements=[];
-        for(let history of this.state.history){
-            console.log(history);
-            historyElements.push(
-                <View style={styles.OrderList} key={history.key}>
-                    <View style={styles.OrderListL}>
-                        <Text style={styles.OrderTime}>取号时间:{history.queueStartTime}</Text>
-                        <View style={{flexDirection:'row'}}>
-                            <Text style={styles.OrderTime}>完成时间:{history.queueEndTime}</Text>
-                        </View>
-                    </View>
-                    <View style={styles.OrderListR}>
-                        <Text style={styles.OrderListRNumber}>{history.queueId}</Text>
-                        <Text style={{color:'orange',paddingBottom:8}}>{history.tableTypeDescribe}</Text>
-                        <Text>({history.eatMinNumber}-{history.eatMaxNumber})人</Text>
-                    </View>
-                </View>)
+        for(let history of that.state.history){
+            if(that.state.history.queueId === ''){
+                historyElements.push(
+                    <View><Text>没有相关订单</Text></View>
+                )
+            }else{
+                    historyElements.push(
+                        <View style={styles.OrderList} key={history.key}>
+                            <View style={styles.OrderListL}>
+                                <Text style={styles.OrderTime}>取号时间:{history.queueStartTime}</Text>
+                                <View style={{flexDirection:'row'}}>
+                                    <Text style={styles.OrderTime}>完成时间:{history.queueEndTime}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.OrderListR}>
+                                <Text style={styles.OrderListRNumber}>{history.queueId}</Text>
+                                <Text style={{color:'orange',paddingBottom:8}}>{history.tableTypeDescribe}</Text>
+                                <Text>({history.eatMinNumber}-{history.eatMaxNumber})人</Text>
+                            </View>
+                        </View>)
+            }
         }
         return (
             <View style={styles.Order}>
