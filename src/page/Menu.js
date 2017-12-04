@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {Image, View, StyleSheet, Text, FlatList} from 'react-native';
+import {Image, View, StyleSheet, Text, FlatList,ScrollView} from 'react-native';
 import {Button, WingBlank, WhiteSpace} from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 const shop = require('../images/pic1.png');
@@ -66,6 +66,7 @@ export default class SectionListBasics extends Component {
 
     render() {
         return (
+            <ScrollView style={{flex: 1}}>
             <View style={{flex: 1}}>
                 {this.state.dataFlag ?
                     <FlatList
@@ -80,6 +81,7 @@ export default class SectionListBasics extends Component {
                 }
 
             </View>
+            </ScrollView>
         );
     }
 }
