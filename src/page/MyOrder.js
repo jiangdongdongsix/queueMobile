@@ -125,7 +125,6 @@ export default class MyOrder extends React.Component {
             tableTypeDescribe:item.tableTypeDescribe,
             queueId:item.queueNumber.slice(1)
         };
-        console.log(unsedInfo.queueId);
         let info = {
             queue:unsedInfo,
             restaurantInfo:that.state.restaurantInfo,
