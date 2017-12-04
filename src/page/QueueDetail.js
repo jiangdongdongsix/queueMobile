@@ -23,6 +23,11 @@ export default class QueueDetail extends React.Component{
         });
     }
 
+    gobackHome(){
+        this.props.navigation.navigate('home');
+    }
+
+
     render() {
         return(
             <View style={{flex:1}}>
@@ -68,7 +73,15 @@ export default class QueueDetail extends React.Component{
                     </Text>
                 </View>
                 <WhiteSpace size="xl"/>
-                <WingBlank><Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this._cancel.bind(this)}>取消排队</Button></WingBlank>
+                <WingBlank>
+                    {
+                        this.props.navigation.state.params.flag ?
+                        <Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this.gobackHome.bind(this)}>返回首页</Button>
+                        :
+                        <Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this._cancel.bind(this)}>取消排队</Button>
+                    }
+
+                </WingBlank>
             </View>
         )
 

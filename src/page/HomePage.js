@@ -199,7 +199,6 @@ export default class MyHomeScreen extends React.Component {
                                         style={{backgroundColor: '#ff4500', borderColor: '#ff4500',width:76,height:28}}
                                         activeStyle={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
                                         onClick={this.goQueue.bind(this,item)}>排队取号</Button>
-
                             </WingBlank>
                         </View>
                     </View>
@@ -234,23 +233,25 @@ export default class MyHomeScreen extends React.Component {
 
     render() {
         return (
-            <ScrollView>
+
             <View style={{flex: 1}}>
                 {this.state.dataFlag ?
-                <FlatList
-                data={this.state.data}
-                renderItem={({item}) => this.renderItem(item)}
-                keyExtractor={this._keyExtractor}
-                onRefresh={this.onRefresh.bind(this)}
-                refreshing={false}
-                />
+                <ScrollView>
+                    <FlatList
+                    data={this.state.data}
+                    renderItem={({item}) => this.renderItem(item)}
+                    keyExtractor={this._keyExtractor}
+                    onRefresh={this.onRefresh.bind(this)}
+                    refreshing={false}
+                    />
+                </ScrollView>
                 :
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                     <Text>网络出现故障</Text>
                 </View>
                 }
             </View>
-            </ScrollView>
+
         )
     }
 }
