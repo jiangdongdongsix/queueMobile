@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,StyleSheet,Image,View,Text,WingBlank,ScrollView } from 'react-native';
+import { Button,StyleSheet,Image,View,Text,WingBlank,ScrollView,TouchableHighlight } from 'react-native';
 import { WhiteSpace,Tabs } from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 /**
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     },
     OrderTime:{
         fontWeight:'bold',
-        fontSize:px2dp(18),
+        fontSize:px2dp(16),
         paddingBottom:px2dp(8)
     },
     OrderResult:{
