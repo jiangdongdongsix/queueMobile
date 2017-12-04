@@ -214,14 +214,14 @@ export default class MyInfo extends React.Component {
                     <ImageBackground source={myTopBg} style={{height:px2dp(200)}}>
                         <View style={styles.InfoTitleIcon}>
                             <View>
-                                <Image source={mySetNormal} style={{height:px2dp(40),width:px2dp(40) }}/>
+                                <Image source={mySetNormal} style={{height:px2dp(50),width:px2dp(50) }}/>
                             </View>
                             <View>
-                                <Image source={myMessageNormal} style={{height:px2dp(40),width:px2dp(40) }}/>
+                                <Image source={myMessageNormal} style={{height:px2dp(50),width:px2dp(50) }}/>
                             </View>
                         </View>
                         <View style={styles.InfoName}>
-                            <View style={{flex:2}}>
+                            <View style={{flex:2}} onClick={this.state.login === true ? ()=>{} :this.showModal('modal')}>
                                 <Image source={myHead} style={{height:px2dp(85),width:px2dp(85) }}/>
                             </View>
                             <View style={styles.InfoNameGroup}>
@@ -237,13 +237,13 @@ export default class MyInfo extends React.Component {
                 <View style={styles.InfoList}>
                     <View style={{flex:4}}>
                         <List style={styles.InfoListItems} key={1}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === false ? ()=>{}:this.initOrder}>我的订单</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/dNuvNrtqUztHCwM.png" onClick={this.state.login === false ? this.showModal('modal') : this.initOrder}>我的订单</Item>
                         </List>
                         <List style={styles.InfoListItems} key={2}>
                             <Item extra={this.state.score} thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png">会员积分</Item>
                         </List>
                         <List style={styles.InfoListItems} key={3}>
-                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.state.login === false ? ()=>{}:this.initFeedback}>意见反馈</Item>
+                            <Item arrow="horizontal" thumb="https://zos.alipayobjects.com/rmsportal/UmbJMbWOejVOpxe.png" onClick={this.state.login === false ? this.showModal('modal') : this.initFeedback}>意见反馈</Item>
                         </List>
                             <Modal
                                 animationType={'slide'}

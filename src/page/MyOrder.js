@@ -20,6 +20,10 @@ export default class MyOrder extends React.Component {
         history:[]
     };
 
+    DetailOrder(){
+        console.log('111');
+    };
+
     componentWillMount(){
         let that = this;
         //获取userId
@@ -53,6 +57,7 @@ export default class MyOrder extends React.Component {
             fetch(url + '/iqescloud/app/user/order/userId?userId=' + that.state.userId+ '&restaurantId=1').then(function(response) {
                 return response.json();
             }).then(function (jsonData) {
+                console.log(jsonData);
                 console.log(jsonData.localResponse);
                 let historyInfo = [];
                 let unusedInfo = [];
@@ -60,7 +65,7 @@ export default class MyOrder extends React.Component {
                 let lenunused = jsonData.localResponse.unused.length;
                 for(let i=0;i<lenHistory;i++){
                     historyInfo.push({
-                        queueId: jsonData.localResponse.history[i].queueId,
+                        queueNumber: jsonData.localResponse.history[i].queueNumber,
                         eatMinNumber: jsonData.localResponse.history[i].eatMinNumber,
                         eatMaxNumber: jsonData.localResponse.history[i].eatMaxNumber,
                         queueEndTime: jsonData.localResponse.history[i].queueEndTime,
@@ -72,7 +77,7 @@ export default class MyOrder extends React.Component {
 
                 for(let i=0;i<lenunused;i++) {
                     unusedInfo.push({
-                        queueId: jsonData.localResponse.unused[i].queueId,
+                        queueNumber: jsonData.localResponse.unused[i].queueNumber,
                         eatMinNumber: jsonData.localResponse.unused[i].eatMinNumber,
                         eatMaxNumber: jsonData.localResponse.unused[i].eatMaxNumber,
                         queueWaitTable: jsonData.localResponse.unused[i].queueWaitTable,
@@ -108,26 +113,29 @@ export default class MyOrder extends React.Component {
     render() {
         const that = this;
         const unusedElements=[];      //保存渲染以后 JSX的数组
+        const handleOrder = this.DetailOrder.bind(this);
         if(that.state.unused.length >0){
             for(let unused of that.state.unused){
                     unusedElements.push(
                         <View style={styles.OrderList} key={unused.key}>
-                            <View style={styles.OrderListL}>
-                                <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
-                                <View style={{flexDirection:'row'}}>
-                                    <Text style={{flex:4}}>需等待桌数</Text>
-                                    <Text style={{flex:2}}>预估时间</Text>
+                            <Text onPress={()=>{console.log('2222')}}>
+                                <View style={styles.OrderListL}>
+                                    <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
+                                    <View style={{flexDirection:'row'}}>
+                                        <Text style={{flex:4}}>需等待桌数</Text>
+                                        <Text style={{flex:2}}>预估时间</Text>
+                                    </View>
+                                    <View style={styles.OrderResult}>
+                                        <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
+                                        <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
+                                    </View>
                                 </View>
-                                <View style={styles.OrderResult}>
-                                    <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
-                                    <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
+                                <View style={styles.OrderListR}>
+                                    <Text style={styles.OrderListRNumber}>{unused.queueNumber}</Text>
+                                    <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
+                                    <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
                                 </View>
-                            </View>
-                            <View style={styles.OrderListR}>
-                                <Text style={styles.OrderListRNumber}>{unused.queueId}</Text>
-                                <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
-                                <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
-                            </View>
+                            </Text>
                         </View>)
             }
         }else{
@@ -149,7 +157,7 @@ export default class MyOrder extends React.Component {
                             </View>
                         </View>
                         <View style={styles.OrderListR}>
-                            <Text style={styles.OrderListRNumber}>{history.queueId}</Text>
+                            <Text style={styles.OrderListRNumber}>{history.queueNumber}</Text>
                             <Text style={{color: 'orange', paddingBottom: 8}}>{history.tableTypeDescribe}</Text>
                             <Text>({history.eatMinNumber}-{history.eatMaxNumber})人</Text>
                         </View>
