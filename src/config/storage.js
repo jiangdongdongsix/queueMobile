@@ -30,7 +30,7 @@ let storage = new Storage({
 // 最好在全局范围内创建一个（且只有一个）storage实例，方便直接调用
 
 // 对于react native
-  global.storage = storage;
+global.storage = storage;
 
 // 这样，在此**之后**的任意位置即可以直接调用storage
 // 注意：全局变量一定是先声明，后使用
