@@ -156,8 +156,19 @@ export default class QueueUp extends React.Component {
             return response.json();
         }).then(function (jsonData) {
             console.log(jsonData);
+            let unsedInfo = {
+                eatMinNumber:jsonData.localResponse.queueInfo.tableType.eatMinNumber,
+                eatMaxNumber:jsonData.localResponse.queueInfo.tableType.eatMaxNumber,
+                queueWaitTable:jsonData.localResponse.queueInfo.waitPopulation,
+                queueWaitTime:jsonData.localResponse.queueInfo.waitTime,
+                queueNumber:jsonData.localResponse.queueInfo.queueNumber,
+                queueStartTime:jsonData.localResponse.queueInfo.queueStartTime,
+                extractFlag:jsonData.localResponse.queueInfo.extractFlag,
+                tableTypeDescribe:jsonData.localResponse.queueInfo.tableType.describe
+            };
+
             let info = {
-                queue:jsonData.localResponse.q-o,
+                queue:unsedInfo,
                 restaurantInfo:that.props.navigation.state.params.shopInfo.restaurantInfo,
                 restaurantId:jsonData.localResponse.restaurantId,
                 flag:false

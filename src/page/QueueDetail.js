@@ -46,19 +46,19 @@ export default class QueueDetail extends React.Component{
                     <View>
                         <Text>餐桌类型</Text>
                         <WhiteSpace />
-                        <Text>{this.props.navigation.state.params.queueInfo.queue.tableType.describe || ""}（{this.props.navigation.state.params.queueInfo.queue.tableType.eatMinNumber}-{this.props.navigation.state.params.queueInfo.queue.tableType.eatMaxNumber}人）</Text>
+                        <Text>{this.props.navigation.state.params.queueInfo.queue.tableTypeDescribe || ""}（{this.props.navigation.state.params.queueInfo.queue.eatMinNumber}-{this.props.navigation.state.params.queueInfo.queue.eatMaxNumber}人）</Text>
                     </View>
                     </WingBlank>
                     <View>
                         <Text>等待桌位</Text>
                         <WhiteSpace />
-                        <Text style={{ color:'#f27242'}}>{this.props.navigation.state.params.queueInfo.queue.waitPopulation}桌</Text>
+                        <Text style={{ color:'#f27242'}}>{this.props.navigation.state.params.queueInfo.queue.queueWaitTable}桌</Text>
                     </View>
                     <WingBlank>
                     <View>
                         <Text>预估时间</Text>
                         <WhiteSpace />
-                        <Text style={{ color:'#f27242'}}>{this.props.navigation.state.params.queueInfo.queue.waitTime}分钟</Text>
+                        <Text style={{ color:'#f27242'}}>{this.props.navigation.state.params.queueInfo.queue.queueWaitTime}分钟</Text>
                     </View>
                     </WingBlank>
                 </View>
