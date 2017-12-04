@@ -118,8 +118,7 @@ export default class MyOrder extends React.Component {
             for(let unused of that.state.unused){
                     unusedElements.push(
                         <View style={styles.OrderList} key={unused.key}>
-                            <Text onPress={()=>{console.log('2222')}}>
-                                <View style={styles.OrderListL}>
+                                <View style={styles.OrderListL} onClick={()=>{console.log('2222')}}>
                                     <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
                                     <View style={{flexDirection:'row'}}>
                                         <Text style={{flex:4}}>需等待桌数</Text>
@@ -135,7 +134,6 @@ export default class MyOrder extends React.Component {
                                     <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
                                     <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
                                 </View>
-                            </Text>
                         </View>)
             }
         }else{
