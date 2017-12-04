@@ -37,7 +37,7 @@ export default class ShopInfo extends React.Component{
                                 source={loctionIcon}
                                 style={{height:10,width:10 }}
                             />
-                            <Text style={styles.addressTittle}>地址：{this.props.restInfo.address}</Text>
+                            <Text style={styles.addressTittle}>地址：{this.props.restInfo.detailAddress}</Text>
                         </View>
                         <View style={styles.address}>
                             <Image

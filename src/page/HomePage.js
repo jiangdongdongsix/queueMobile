@@ -226,7 +226,7 @@ export default class MyHomeScreen extends React.Component {
 
                     </View>
                     <View style={styles.address}>
-                        <WingBlank><Text style={styles.fontSmall}>地址：{item.restaurantInfo.address}</Text></WingBlank>
+                        <WingBlank><Text style={styles.fontSmall}>地址：{item.restaurantInfo.detailAddress}</Text></WingBlank>
                         <WingBlank><Text style={styles.fontSmall}>1.8公里</Text></WingBlank>
                     </View>
                 </View>
