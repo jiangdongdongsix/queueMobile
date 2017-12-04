@@ -20,10 +20,6 @@ export default class MyOrder extends React.Component {
         history:[]
     };
 
-    DetailOrder(){
-        console.log('111');
-    };
-
     componentWillMount(){
         let that = this;
         //获取userId
@@ -54,10 +50,10 @@ export default class MyOrder extends React.Component {
                 userId:ret.id
             });
             console.log(that.state.userId);
-            fetch(url + '/iqescloud/app/user/order/userId?userId=' + that.state.userId+ '&restaurantId=1').then(function(response) {
+
+            fetch(url + '/iqescloud/app/user/order/userId?userId=' +ret.id+ '&restaurantId=1').then(function(response) {
                 return response.json();
             }).then(function (jsonData) {
-                console.log(jsonData);
                 console.log(jsonData.localResponse);
                 let historyInfo = [];
                 let unusedInfo = [];
@@ -87,6 +83,8 @@ export default class MyOrder extends React.Component {
                         key: i
                     });
 
+                    console.log(historyInfo);
+                    console.log(unusedInfo);
                     that.setState({
                         history: historyInfo,
                         unused:unusedInfo
@@ -113,27 +111,26 @@ export default class MyOrder extends React.Component {
     render() {
         const that = this;
         const unusedElements=[];      //保存渲染以后 JSX的数组
-        const handleOrder = this.DetailOrder.bind(this);
         if(that.state.unused.length >0){
             for(let unused of that.state.unused){
                     unusedElements.push(
-                        <View style={styles.OrderList} key={unused.key}>
-                                <View style={styles.OrderListL} onClick={()=>{console.log('2222')}}>
-                                    <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
-                                    <View style={{flexDirection:'row'}}>
-                                        <Text style={{flex:4}}>需等待桌数</Text>
-                                        <Text style={{flex:2}}>预估时间</Text>
-                                    </View>
-                                    <View style={styles.OrderResult}>
-                                        <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
-                                        <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
-                                    </View>
+                        <View style={styles.OrderList} key={unused.key} >
+                            <View style={styles.OrderListL}>
+                                <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
+                                <View style={{flexDirection:'row'}}>
+                                    <Text style={{flex:4}}>需等待桌数</Text>
+                                    <Text style={{flex:2}}>预估时间</Text>
                                 </View>
-                                <View style={styles.OrderListR}>
-                                    <Text style={styles.OrderListRNumber}>{unused.queueNumber}</Text>
-                                    <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
-                                    <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
+                                <View style={styles.OrderResult}>
+                                    <Text style={{flex:4,color:'orange',fontSize:px2dp(14)}}>{unused.queueWaitTable}</Text>
+                                    <Text style={{flex:2,color:'orange',fontSize:px2dp(14)}}> >{unused.queueWaitTime}</Text>
                                 </View>
+                            </View>
+                            <View style={styles.OrderListR}>
+                                <Text style={styles.OrderListRNumber}>{unused.queueNumber}</Text>
+                                <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
+                                <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
+                            </View>
                         </View>)
             }
         }else{
@@ -163,7 +160,7 @@ export default class MyOrder extends React.Component {
             }
         }else{
             historyElements.push(
-                <View><Text>没有相关订单</Text></View>
+                <View style={{justifyContent:'center',alignItems:'center'}}><Text>没有相关订单</Text></View>
             )
         }
 
