@@ -122,7 +122,8 @@ export default class MyOrder extends React.Component {
             queueNumber:item.queueNumber,
             queueStartTime:item.queueStartTime,
             extractFlag:item.extractFlag,
-            tableTypeDescribe:item.tableTypeDescribe
+            tableTypeDescribe:item.tableTypeDescribe,
+            queueId:item.tableTypeDescribe.slice(1)
         };
         let info = {
             queue:unsedInfo,
