@@ -17,7 +17,8 @@ export default class MyOrder extends React.Component {
         restaurantId:1,
         userId:'',
         unused:[],
-        history:[]
+        history:[],
+        restaurantInfo:{}
     };
 
     componentWillMount(){
@@ -59,6 +60,7 @@ export default class MyOrder extends React.Component {
                 let unusedInfo = [];
                 let lenHistory = jsonData.localResponse.history.length;
                 let lenunused = jsonData.localResponse.unused.length;
+                let restaurantInfo = jsonData.localResponse.restaurantInfo;
                 for(let i=0;i<lenHistory;i++){
                     historyInfo.push({
                         queueNumber: jsonData.localResponse.history[i].queueNumber,
@@ -87,7 +89,8 @@ export default class MyOrder extends React.Component {
                     console.log(unusedInfo);
                     that.setState({
                         history: historyInfo,
-                        unused:unusedInfo
+                        unused:unusedInfo,
+                        restaurantInfo:restaurantInfo
                     });
                 }
             }).catch(function () {
@@ -108,12 +111,35 @@ export default class MyOrder extends React.Component {
         });
     };
 
+
+    handleDetailOrder(item){
+        let that = this;
+        let unsedInfo = {
+            eatMinNumber:item.eatMinNumber,
+            eatMaxNumber:item.eatMaxNumber,
+            queueWaitTable:item.queueWaitTable,
+            queueWaitTime:item.queueWaitTime,
+            queueNumber:item.queueNumber,
+            queueStartTime:item.queueStartTime,
+            extractFlag:item.extractFlag,
+            tableTypeDescribe:item.tableTypeDescribe
+        };
+        let info = {
+            queue:unsedInfo,
+            restaurantInfo:that.state.restaurantInfo,
+            restaurantId:that.state.restaurantId,
+            flag:false
+        };
+        that.props.navigation.navigate('detail',{queueInfo:info});
+    }
+
     render() {
         const that = this;
         const unusedElements=[];      //保存渲染以后 JSX的数组
         if(that.state.unused.length >0){
             for(let unused of that.state.unused){
                     unusedElements.push(
+                        <TouchableHighlight onPress={this.handleDetailOrder.bind(this,unused)}>
                         <View style={styles.OrderList} key={unused.key} >
                             <View style={styles.OrderListL}>
                                 <Text style={styles.OrderTime}>取号时间:{unused.queueStartTime}</Text>
@@ -131,7 +157,8 @@ export default class MyOrder extends React.Component {
                                 <Text style={{color:'orange',paddingBottom:8}}>{unused.tableTypeDescribe}</Text>
                                 <Text>({unused.eatMinNumber}-{unused.eatMaxNumber})人</Text>
                             </View>
-                        </View>)
+                        </View>
+                        </TouchableHighlight>)
             }
         }else{
             unusedElements.push(
