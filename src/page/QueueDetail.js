@@ -35,10 +35,10 @@ export default class QueueDetail extends React.Component{
                 <WhiteSpace size="lg"/>
                 <View style={styles.detail}>
                     <WingBlank>
-                        <Text>取号时间：</Text>
+                        <Text>取号时间：{this.props.navigation.state.params.queueInfo.queue.queueStartTime}</Text>
                     </WingBlank>
                     <WingBlank>
-                        <Text style={styles.number}>{this.props.navigation.state.params.queueInfo.queue.queueId}</Text>
+                        <Text style={styles.number}>{this.props.navigation.state.params.queueInfo.queue.queueNumber}</Text>
                     </WingBlank>
                 </View>
                 <View style ={styles.queueInfo}>
@@ -75,8 +75,8 @@ export default class QueueDetail extends React.Component{
                 <WhiteSpace size="xl"/>
                 <WingBlank>
                     {
-                        this.props.navigation.state.params.flag ?
-                        <Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this.gobackHome.bind(this)}>返回首页</Button>
+                        this.props.navigation.state.params.queueInfo.flag || true ?
+                        <Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}} activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}} onClick={this.gobackHome.bind(this)}>返回首页</Button>
                         :
                         <Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this._cancel.bind(this)}>取消排队</Button>
                     }

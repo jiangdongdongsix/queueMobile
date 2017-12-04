@@ -102,6 +102,11 @@ export default class MyHomeScreen extends React.Component {
     goQueue(item) {
         let that = this;
         let userinfo = null;
+        //    let userinfo= {
+        //         id:'21',
+        //         name:'2345567888',
+        //         login:true
+        //     };
         storage.load({
             key: 'userInfo',
             autoSync: true,
@@ -191,13 +196,13 @@ export default class MyHomeScreen extends React.Component {
                         <View style={styles.buttonList}>
                             <Button type="primary" size="small"
                                     style={{backgroundColor: '#ffa500', borderColor: '#ffa500',width:76,height:28}}
-                                    activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
+                                    activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500',width:76,height:28}}
                                     onClick = {() => this.props.navigation.navigate('menu')}
                             >菜单预览</Button>
                             <WingBlank>
                                 <Button type="primary" size="small"
                                         style={{backgroundColor: '#ff4500', borderColor: '#ff4500',width:76,height:28}}
-                                        activeStyle={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
+                                        activeStyle={{backgroundColor: '#ff4500', borderColor: '#ff4500',width:76,height:28}}
                                         onClick={this.goQueue.bind(this,item)}>排队取号</Button>
                             </WingBlank>
                         </View>
