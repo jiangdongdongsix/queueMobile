@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
-import {Image, View, StyleSheet, Text, FlatList,Modal,TextInput} from 'react-native';
-import {Button, WingBlank, WhiteSpace,Progress,List,Tabs} from 'antd-mobile';
+import {Image, View, StyleSheet, Text, FlatList,Modal,ScrollView} from 'react-native';
+import {Button, WingBlank, WhiteSpace,Progress,List,Tabs,Toast} from 'antd-mobile';
 import HeaderSearchBar from '../components/HeaderSearchBar';
 import px2dp from '../utils/px2pd';
 import px2dw from '../utils/px2dw';
@@ -67,6 +67,7 @@ export default class MyHomeScreen extends React.Component {
     }
 
 
+    //进行虚拟排队
     vitural(userinfo,item){
         let that = this;
         fetch(url + "/iqescloud/app/queue/virtualQueue",{
@@ -84,7 +85,6 @@ export default class MyHomeScreen extends React.Component {
         })
             .then((response) => response.json())
             .then((responseJson) => {
-                console.log(responseJson);
                 let info = {
                     restaurantId:responseJson.localResponse.restaurantId,
                     queueId:responseJson.localResponse.id,
@@ -98,61 +98,7 @@ export default class MyHomeScreen extends React.Component {
         });
     }
 
-    _handleBack() {
-        const navigator = this.props.navigator;
-        if (navigator && navigator.getCurrentRoutes().length > 1) {
-            navigator.pop();
-            return true;
-        }
-        return false;
-    }
-
-    handleSignIn(){
-        let that = this;
-        fetch(url + '/iqescloud/app/user/login?tel=' + that.state.user +'&password=' + that.state.pwd)
-            .then(function(response) {
-                return response.json();
-            }).then(function (jsonData) {
-            console.log(jsonData);
-            that.setState({
-                modal:false,
-                name:jsonData.user.userName,
-                rvalue:jsonData.user.creditValue,
-                percent: jsonData.user.creditValue,
-                score:jsonData.user.memberIntegral,
-                login:true
-            });
-            storage.save({
-                key:'userInfo',
-                data: {
-                    "creditValue":jsonData.user.creditValue,
-                    "id":jsonData.user.id,
-                    "memberIntegral":jsonData.user.memberIntegral,
-                    "password":jsonData.user.password,
-                    "tel":jsonData.user.tel,
-                    "userName":jsonData.user.userName
-                },
-                expires: 1000 * 3600
-            });
-            console.log(storage);
-            if(jsonData.ErrorCode === '0'){
-                console.log('登录成功');
-            }
-        }).catch(function () {
-            console.log('登录失败');
-        });
-    }
-
-    handleInputUser(user){
-        let that = this;
-        that.setState({user:user});
-    }
-
-    handleInputPwd(pwd){
-        let that = this;
-        that.setState({ pwd: pwd });
-    }
-
+    //判断是否登录，跳转至排队
     goQueue(item) {
         let that = this;
         let userinfo = null;
@@ -178,24 +124,19 @@ export default class MyHomeScreen extends React.Component {
             // console.warn(err.message);
             switch (err.name) {
                 case 'NotFoundError':
-                    that.setState({
-                        modal:true
-                    });
+                    Toast.info('您目前处于未登录状态', 2);
                     break;
                 case 'ExpiredError':
+                    Toast.info('您目前处于未登录状态', 2);
                     // TODO
                     break;
             }
         });
     }
 
-    onClose = key=>()=>{
-        this.setState({
-            [key]:false,
-        });
-    };
 
-    componentWillMount() {
+
+    getData(){
         const that = this;
         fetch(url + "/iqescloud/app/homePage")
             .then((response) => response.json())
@@ -211,10 +152,19 @@ export default class MyHomeScreen extends React.Component {
                 }
 
             }).catch((error) => {
-                that.setState({
-                    dataFlag:false
-                })
+            that.setState({
+                dataFlag:false
+            })
         });
+    }
+
+    //初始化数据
+    componentWillMount() {
+       this.getData();
+    }
+
+    onRefresh(){
+        this.getData();
     }
 
     _keyExtractor = (item, index) => item.restaurantId;
@@ -224,9 +174,9 @@ export default class MyHomeScreen extends React.Component {
     renderqueinfo(item){
         return (
             <View style={styles.queueItem} key={item.tableType.id}>
-                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>{item.tableType.describe}({item.tableType.eatMinNumber}-{item.tableType.eatMaxNumber})人</Text>
-                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>正在排队{item.waitPopulation}桌</Text>
-                <Text style={{width: px2dw(70),fontSize:px2dp(12)}}>约{item.waitTime}分钟</Text>
+                <Text style={{width: px2dw(70),fontSize:12}}>{item.tableType.describe}({item.tableType.eatMinNumber}-{item.tableType.eatMaxNumber})人</Text>
+                <Text style={{width: px2dw(70),fontSize:12}}>正在排队{item.waitPopulation}桌</Text>
+                <Text style={{width: px2dw(70),fontSize:12}}>约{item.waitTime}分钟</Text>
             </View>
         )
     }
@@ -237,19 +187,18 @@ export default class MyHomeScreen extends React.Component {
             <View style={styles.shopContent} key={item.restaurantId}>
                 <View style={styles.shop}>
                     <View style={styles.shopName}>
-                        <WingBlank><Text>{item.restaurantInfo.name}</Text></WingBlank>
+                        <WingBlank><Text style={{fontSize:16,color:'#141414'}}>{item.restaurantInfo.name}</Text></WingBlank>
                         <View style={styles.buttonList}>
                             <Button type="primary" size="small"
-                                    style={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
+                                    style={{backgroundColor: '#ffa500', borderColor: '#ffa500',width:76,height:28}}
                                     activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}}
                                     onClick = {() => this.props.navigation.navigate('menu')}
                             >菜单预览</Button>
                             <WingBlank>
                                 <Button type="primary" size="small"
-                                        style={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
+                                        style={{backgroundColor: '#ff4500', borderColor: '#ff4500',width:76,height:28}}
                                         activeStyle={{backgroundColor: '#ff4500', borderColor: '#ff4500'}}
                                         onClick={this.goQueue.bind(this,item)}>排队取号</Button>
-
                             </WingBlank>
                         </View>
                     </View>
@@ -257,7 +206,7 @@ export default class MyHomeScreen extends React.Component {
                         <WingBlank style={{width:px2dw(70)}}>
                             <Image
                                 source={shop}
-                                style={{height: 85, width: 85}}
+                                style={{height: 60, width: 86}}
                             />
                         </WingBlank>
 
@@ -280,107 +229,36 @@ export default class MyHomeScreen extends React.Component {
         )
     }
 
+
+
     render() {
         return (
+
             <View style={{flex: 1}}>
                 {this.state.dataFlag ?
-                <FlatList
-                data={this.state.data}
-                renderItem={({item}) => this.renderItem(item)}
-                keyExtractor={this._keyExtractor}
-                />
+                <ScrollView>
+                    <FlatList
+                    data={this.state.data}
+                    renderItem={({item}) => this.renderItem(item)}
+                    keyExtractor={this._keyExtractor}
+                    onRefresh={this.onRefresh.bind(this)}
+                    refreshing={false}
+                    />
+                </ScrollView>
                 :
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                     <Text>网络出现故障</Text>
                 </View>
                 }
-
-                <Modal
-                    animationType={'slide'}
-                    onRequestClose={() => console.log('onRequestClose...')}
-                    visible={this.state.modal}
-                >
-                    <View style={styles.LoginModal}>
-                        <View style={styles.LoginModalTitle}>
-                            <Text onPress={this.onClose('modal')}>
-                                <Image source={loginClose} style={{width:px2dp(120),height:px2dp(120)}}/>
-                            </Text>
-                            <Text style={styles.LoginModalLoginText}>登录</Text>
-                            <Text style={{paddingRight:8}} onPress={this.handleSignUp}>注册</Text>
-                        </View>
-                        <View style={styles.LoginTabs}>
-                            <Tabs tabs={tabs} initialPage={0}>
-                                <View>
-                                    <View style={styles.LoginTabsUserNumber}>
-                                        <Text style={styles.LoginTabsUserNumberText}>账号</Text>
-                                        <TextInput placeholder='请输入账号'
-                                                   placeholderTextColor={'#939393'}
-                                                   underlineColorAndroid="transparent"
-                                                   style={{flex:5}}
-                                                   onChangeText={(text)=>this.handleInputUser(text)}
-                                        >
-                                        </TextInput>
-                                    </View>
-                                    <View style={styles.LoginTabsUserNumber}>
-                                        <Text style={styles.LoginTabsUserPwd}>密码</Text>
-                                        <TextInput placeholder='请输入密码'
-                                                   placeholderTextColor={'#939393'}
-                                                   underlineColorAndroid="transparent"
-                                                   style={{flex:5}}
-                                                   secureTextEntry={true}
-                                                   onChangeText={(text)=>this.handleInputPwd(text)}
-                                        >
-                                        </TextInput>
-                                    </View>
-                                    <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                        <Button onClick={this.handleSignIn.bind(this)} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}} activeStyle={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
-                                    </View>
-                                </View>
-
-                                <View>
-                                    <View style={styles.LoginTabsUserNumber}>
-                                        <Text style={styles.LoginTabsUserNumberText}>中国</Text>
-                                        <TextInput style={{flex:5}} border={'none'} editable={false}>+86</TextInput>
-                                        <Text style={{fontSize:px2dp(16),paddingTop:px2dp(10),paddingRight:px2dp(8)}}> > </Text>
-                                    </View>
-                                    <View style={{flexDirection:'row',backgroundColor:'white',marginTop:10}}>
-                                        <Text style={styles.LoginTabsUserPwd}>手机号</Text>
-                                        <TextInput placeholder='请输入手机号'
-                                                   placeholderTextColor={'#939393'}
-                                                   underlineColorAndroid="transparent"
-                                                   style={{flex:5}}
-                                                   autoFocus={true}
-                                        >
-                                        </TextInput>
-                                    </View>
-                                    <View style={styles.LoginTabsUserNumber}>
-                                        <Text style={styles.LoginTabsUserPwd}>验证码</Text>
-                                        <TextInput placeholder='请输入验证码'
-                                                   placeholderTextColor={'#939393'}
-                                                   underlineColorAndroid="transparent"
-                                                   style={{flex:3}}
-                                        >
-                                        </TextInput>
-                                        <Button  size="small" style={styles.LoginTabsPhoneVerify}>请输入验证码</Button>
-                                    </View>
-                                    <Text style={styles.LoginTabsPhoneVerifyMess}>验证码将以短信形式发送至您手机，请注意查收</Text>
-                                    <View style={{marginTop: px2dp(20), height: px2dp(50)}}>
-                                        <Button onPress={this._handleBack.bind(this)} type="primary" style={{backgroundColor:'#F27241',borderWidth:0}}>登录</Button>
-                                    </View>
-                                </View>
-                            </Tabs>
-                        </View>
-                    </View>
-                </Modal>
-
             </View>
+
         )
     }
 }
 
 const styles = StyleSheet.create({
     shopContent: {
-        height: px2dp(150),
+        height: px2dp(160),
         backgroundColor: 'white',
         margin: 5,
     },
@@ -404,7 +282,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     shopQueue: {
-        flex: 4,
+        flex: 2,
         flexDirection: 'row',
         width:Dimensions.get('window').width
     },
@@ -415,7 +293,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     fontSmall: {
-        fontSize: px2dp(10),
+        fontSize: 12,
     },
     LoginModal:{
         flex:1,
