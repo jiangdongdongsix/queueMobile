@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,StyleSheet,Image,View,Text,WingBlank } from 'react-native';
+import { Button,StyleSheet,Image,View,Text,WingBlank,ScrollView } from 'react-native';
 import { WhiteSpace,Tabs } from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 /**
