@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button,StyleSheet,Image,View,Text,WingBlank } from 'react-native';
+import { Button,StyleSheet,Image,View,Text,WingBlank,ScrollView } from 'react-native';
 import { WhiteSpace,Tabs } from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 /**
@@ -162,6 +162,7 @@ export default class MyOrder extends React.Component {
         }
 
         return (
+            <ScrollView>
             <View style={styles.Order}>
                 <Tabs tabs={tabs} initialPage={0}>
                     <View style={{flex:3}}>
@@ -172,6 +173,7 @@ export default class MyOrder extends React.Component {
                     </View>
                 </Tabs>
             </View>
+            </ScrollView>
         );
     }
 }

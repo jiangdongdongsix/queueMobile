@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet,Image,View,Text,ImageBackground,Modal,Animated,TouchableOpacity,TextInput } from 'react-native';
-import { Button,Progress,List,Tabs } from 'antd-mobile';
+import { Button,Progress,List,Tabs,Toast} from 'antd-mobile';
 import px2dp from '../utils/px2pd';
 /**
  *  我的主页
@@ -169,30 +169,38 @@ export default class MyInfo extends React.Component {
                 return response.json();
             }).then(function (jsonData) {
             console.log(jsonData);
-            that.setState({
-                modal:false,
-                name:jsonData.user.userName,
-                rvalue:jsonData.user.creditValue,
-                percent: jsonData.user.creditValue,
-                score:jsonData.user.memberIntegral,
-                login:true
-            });
-            storage.save({
-                key:'userInfo',
-                data: {
-                    "creditValue":jsonData.user.creditValue,
-                    "id":jsonData.user.id,
-                    "memberIntegral":jsonData.user.memberIntegral,
-                    "password":jsonData.user.password,
-                    "tel":jsonData.user.tel,
-                    "userName":jsonData.user.userName
-                },
-                expires: 1000 * 3600
-            });
-            console.log(storage);
             if(jsonData.ErrorCode === '0'){
                 console.log('登录成功');
+                Toast.info('登录成功', 1);
+                that.setState({
+                    modal:false,
+                    name:jsonData.user.userName,
+                    rvalue:jsonData.user.creditValue,
+                    percent: jsonData.user.creditValue,
+                    score:jsonData.user.memberIntegral,
+                    login:true
+                });
+                storage.save({
+                    key:'userInfo',
+                    data: {
+                        "creditValue":jsonData.user.creditValue,
+                        "id":jsonData.user.id,
+                        "memberIntegral":jsonData.user.memberIntegral,
+                        "password":jsonData.user.password,
+                        "tel":jsonData.user.tel,
+                        "userName":jsonData.user.userName
+                    },
+                    expires: 1000 * 3600
+                });
+            }else if(jsonData.ErrorCode === '1'){
+                console.log(jsonData.ErrorMessage);
+                that.setState({
+                    modal:false
+                });
+                Toast.info(jsonData.ErrorMessage);
+                Toast.info(jsonData.ErrorMessage,1)
             }
+            console.log(storage);
         }).catch(function () {
             console.log('登录失败');
         });
