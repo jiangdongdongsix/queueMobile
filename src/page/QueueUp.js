@@ -157,7 +157,7 @@ export default class QueueUp extends React.Component {
         }).then(function (jsonData) {
             console.log(jsonData);
             let info = {
-                queue:jsonData.localResponse.queueInfo,
+                queue:jsonData.localResponse.q-o,
                 restaurantInfo:that.props.navigation.state.params.shopInfo.restaurantInfo,
                 restaurantId:jsonData.localResponse.restaurantId,
                 flag:false
