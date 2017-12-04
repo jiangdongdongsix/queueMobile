@@ -75,7 +75,7 @@ export default class QueueDetail extends React.Component{
                 <WhiteSpace size="xl"/>
                 <WingBlank>
                     {
-                        this.props.navigation.state.params.queueInfo.flag || true ?
+                        this.props.navigation.state.params.queueInfo.flag  ?
                         <Button type="primary" style={{backgroundColor:'#ffa500',borderColor:'#ffa500'}} activeStyle={{backgroundColor: '#ffa500', borderColor: '#ffa500'}} onClick={this.gobackHome.bind(this)}>返回首页</Button>
                         :
                         <Button type="primary" style={{backgroundColor:'grey',borderColor:'#dcdcdc'}} onClick={this._cancel.bind(this)}>取消排队</Button>
